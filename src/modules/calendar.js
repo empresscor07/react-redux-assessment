@@ -66,11 +66,11 @@ export function initiateGetEvents() {
                 dispatch(getEventsFailure())
             }
             response.json().then(json => {
-                if (!json.event) {
+                if (!json.event_list) {
                     dispatch(getEventsFailure())
                 }
 
-                dispatch(getEventsSuccess(json.event))
+                dispatch(getEventsSuccess(json.event_list))
             })
         })
     }

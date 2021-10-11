@@ -2,7 +2,7 @@ import {Button, Row, Col, Card, Placeholder, Modal, Form, Badge} from 'react-boo
 import {useState} from "react";
 
 function Events({handleLogoutRequest, events}) {
-
+    console.log(events);
     const [show, setShow] = useState(false);
     const [title, setTitle] = useState('');
     const [startTime, setStartTime] = useState('');
