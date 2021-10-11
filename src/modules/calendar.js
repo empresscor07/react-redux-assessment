@@ -1,5 +1,5 @@
 //actions
-import {requestCalendar} from "../services/calendar";
+import {requestCalendar, requestFilteredCalendar} from "../services/calendar";
 
 const GET_EVENTS_REQUEST = 'calendar/events/GET_EVENTS_REQUEST'
 const GET_EVENTS_SUCCESS = 'calendar/events/GET_EVENTS_SUCCESS'
@@ -62,6 +62,24 @@ export function initiateGetEvents() {
     return function getEvents(dispatch, getState) {
         dispatch(getEventsRequest())
         requestCalendar(getState().user.token).then(response => {
+            if (!response.ok) {
+                dispatch(getEventsFailure())
+            }
+            response.json().then(json => {
+                if (!json.event_list) {
+                    dispatch(getEventsFailure())
+                }
+
+                dispatch(getEventsSuccess(json.event_list))
+            })
+        })
+    }
+}
+
+export function initiatePostEventsInWindow(window) {
+    return function postEventsInWindow(dispatch, getState) {
+        dispatch(getEventsRequest())
+        requestFilteredCalendar(getState().user.token, window).then(response => {
             if (!response.ok) {
                 dispatch(getEventsFailure())
             }

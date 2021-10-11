@@ -1,10 +1,5 @@
 const base_url = 'http://localhost:3000/api/'
 
-// const window = {
-//     window_start: '2021-10-01T00:00:00.000Z',
-//     window_end: '2021-12-31T09:00:00.000Z'
-// }
-
 export function requestCalendar(token) {
     // console.log(JSON.stringify(window));
     return fetch(base_url + 'calendar/events', {
@@ -14,6 +9,18 @@ export function requestCalendar(token) {
             'Authorization': 'Bearer ' + token
         },
         // body: JSON.stringify(window)
+    })
+}
+
+
+export function requestFilteredCalendar(token, window) {
+    return fetch(base_url + 'calendar/events/window', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: window
     })
 }
 

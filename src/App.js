@@ -4,7 +4,7 @@ import Events from './components/Calendar'
 // import {createMemo, deleteMemo} from "./services/memos";
 import {connect} from "react-redux";
 import {initiateLogin, logout} from "./modules/user";
-import {initiateGetEvents} from "./modules/calendar";
+import {initiateGetEvents, initiatePostEventsInWindow} from "./modules/calendar";
 
 function App({
                dispatch,
@@ -19,8 +19,9 @@ function App({
   //   console.log(error)
   // }
 
-  function handleRequestEvents() {
-    dispatch(initiateGetEvents())
+  function handleRequestEventsInWindow(window_start, window_end) {
+    const window = JSON.stringify({window_start, window_end})
+    dispatch(initiatePostEventsInWindow(window))
   }
 
   function handleLoginRequest(username, password) {
@@ -52,7 +53,11 @@ function App({
           //else run login function to render login screen again.
           token ?
               //pass param with handle login or logout function as the value
-              <Events handleLogoutRequest={handleLogoutRequest} events={events} /> :
+              <Events
+                  handleLogoutRequest={handleLogoutRequest}
+                  events={events}
+                  handleRequestEventsInWindow={handleRequestEventsInWindow}
+              /> :
               <Login
                   handleLoginRequest={handleLoginRequest}
                   loginFailure={loginFailure}

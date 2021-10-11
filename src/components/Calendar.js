@@ -1,15 +1,31 @@
 import {Button, Row, Col, Card, Placeholder, Modal, Form, Badge} from 'react-bootstrap'
 import {useState} from "react";
 
-function Events({handleLogoutRequest, events}) {
+function Events({handleLogoutRequest, handleRequestEventsInWindow, events}) {
     console.log(events);
-    const [show, setShow] = useState(false);
-    const [title, setTitle] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    // const [show, setShow] = useState(false);
+    // const [title, setTitle] = useState('');
+    // const [startTime, setStartTime] = useState('');
+    // const [endTime, setEndTime] = useState('');
+    const [window_start, setStartWindow] = useState('');
+    const [window_end, setEndWindow] = useState('');
     // const handleClose = () => setShow(false);
     // const handleShow = () => setShow(true);
+    // const window = {
+    //     window_start: '2021-10-01T00:00:00.000Z',
+    //     window_end: '2021-12-31T09:00:00.000Z'
+    // }
 
+    function onFilterClick() {
+        // const window = {
+        //     window_start: '2021-10-01T00:00:00.000Z',
+        //     window_end: '2021-12-31T09:00:00.000Z'
+        // }
+        setStartWindow('2021-10-01T00:00:00.000Z')
+        setEndWindow('2021-11-31T09:00:00.000Z')
+        handleRequestEventsInWindow(window_start, window_end)
+
+    }
     // function handleSubmit(event) {
     //     event.preventDefault();
     //     console.log({content, memoTags});
@@ -58,9 +74,8 @@ function Events({handleLogoutRequest, events}) {
             <Row className='mt-3'>
                 <Col><h1>Welcome!</h1></Col>
                 {/*<Col xs='auto'><Button onClick={handleShow}>New</Button></Col>*/}
-                <Col xs='auto'>
-                    <Button variant='outline-primary' onClick={handleLogoutRequest}>Logout</Button>
-                </Col>
+                <Col xs='auto'><Button variant='success' onClick={onFilterClick}>Filter</Button></Col>
+                <Col xs='auto'><Button variant='outline-primary' onClick={handleLogoutRequest}>Logout</Button></Col>
             </Row>
             <Row>
                 {
