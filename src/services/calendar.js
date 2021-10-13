@@ -14,6 +14,7 @@ export function requestCalendar(token) {
 
 
 export function requestFilteredCalendar(token, window) {
+    console.log(window.window_start, window.window_end)
     return fetch(base_url + 'calendar/events/window', {
         method: 'POST',
         headers: {
@@ -25,8 +26,8 @@ export function requestFilteredCalendar(token, window) {
 }
 
 export function createEvent(token, event) {
-    console.log(token)
-    console.log(event)
+    // console.log(token)
+    console.log(JSON.stringify(event))
     return fetch(base_url + 'calendar/events', {
         method: 'POST',
         headers: {
@@ -37,16 +38,13 @@ export function createEvent(token, event) {
     })
 }
 
-// export function deleteMemo(token, memo) {
-//     console.log(memo)
-//     return fetch(base_url + 'memo/' + memo.id, {
-//         method: 'DELETE',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer ' + token
-//         },
-//         body: JSON.stringify({
-//             created_timestamp: memo.created_timestamp
-//         })
-//     })
-// }
+export function deleteEvent(token, event) {
+    return fetch(base_url + 'calendar/events/' + event.id, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        //don't need body here because already getting the host_id through the token and the event id through URL
+    })
+}

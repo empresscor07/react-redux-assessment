@@ -6,7 +6,7 @@ function Login({handleLoginRequest, loginPending, loginFailure}) {
     const [password, setPassword] = useState('')
     function handleLogin (event) {
         event.preventDefault();
-        console.log({username, password});
+        console.log(`Welcome ${username}!`);
         handleLoginRequest(username, password);
     }
 

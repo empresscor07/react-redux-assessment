@@ -7,21 +7,21 @@ export default function FilterEvents({showFilter, handleFilterClose, handleFilte
 
     function handleFilterSubmit(event) {
         event.preventDefault()
-        console.log(window_start, window_end)
+        // console.log(window_start, window_end)
         handleFilterClose()
         handleFilterEvents({window_start, window_end})
     }
 
     function handleStartWindowChange(event) {
         setStartWindow(event.target.value)
-        console.log(` handler ${window_start}`)
+        // console.log(` handler ${window_start}`)
     }
 
     function handleEndWindowChange(event) {
         setEndWindow(event.target.value)
-        console.log(` handler ${window_end}`)
+        // console.log(` handler ${window_end}`)
     }
-
+    //console.log(showFilter);
     return (
         <Modal show={showFilter} onHide={handleFilterClose}>
             <Modal.Header closeButton>
@@ -34,9 +34,9 @@ export default function FilterEvents({showFilter, handleFilterClose, handleFilte
                     <Form.Group className="mb-3">
                         <Form.Label>From:</Form.Label>
                         <Form.Control type="datetime-local"
-                                      value="2021-10-12T14:30"
-                                      min="2021-10-12T00:00"
-                                      max="2025-01-01T00:00"
+                                      // value="2021-10-12T14:30"
+                                      // min="2021-10-12T00:00"
+                                      // max="2025-01-01T00:00"
                                       onChange={handleStartWindowChange}
                         />
                     </Form.Group>
@@ -44,9 +44,9 @@ export default function FilterEvents({showFilter, handleFilterClose, handleFilte
                     <Form.Group className="mb-3">
                         <Form.Label>Until:</Form.Label>
                         <Form.Control type="datetime-local"
-                                      value="2021-11-30T15:30"
-                                      min="2021-10-12T00:00"
-                                      max="2025-01-01T00:00"
+                                      // value="2021-11-30T15:30"
+                                      // min="2021-10-12T00:00"
+                                      // max="2025-01-01T00:00"
                                       onChange={handleEndWindowChange}
                         />
                     </Form.Group>

@@ -3,7 +3,7 @@ import {useState} from "react";
 
 export default function NewEvent({show, handleClose, handleCreateEvent}) {
     const [title, setEventTitle] = useState('');
-    const [attendee_list, setAttendees] = useState('');
+    const [attendees, setAttendees] = useState('');
     const [description, setEventDescription] = useState('');
     const [location, setEventLocation] = useState('');
     const [meeting_link, setEventLink] = useState('');
@@ -12,10 +12,10 @@ export default function NewEvent({show, handleClose, handleCreateEvent}) {
 
     function handleSubmit(event) {
         event.preventDefault()
-        const attendees = attendee_list.split(',')
+        const attendee_list = attendees.split(',')
         handleClose()
         handleCreateEvent({
-            attendees,
+            attendee_list,
             title,
             description,
             location,
@@ -88,7 +88,6 @@ export default function NewEvent({show, handleClose, handleCreateEvent}) {
                     <Form.Group className="mb-3">
                         <Form.Label>Start Time</Form.Label>
                         <Form.Control type="datetime-local"
-                                      value="2021-10-12T14:30"
                                       min="2021-10-12T00:00"
                                       max="2025-01-01T00:00"
                                       onChange={handleStartChange}
@@ -98,7 +97,6 @@ export default function NewEvent({show, handleClose, handleCreateEvent}) {
                     <Form.Group className="mb-3">
                         <Form.Label>End Time</Form.Label>
                         <Form.Control type="datetime-local"
-                                      value="2021-10-12T15:30"
                                       min="2021-10-12T00:00"
                                       max="2025-01-01T00:00"
                                       onChange={handleEndChange}

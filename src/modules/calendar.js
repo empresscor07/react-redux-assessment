@@ -1,5 +1,5 @@
 //actions
-import {requestCalendar, requestFilteredCalendar, createEvent} from "../services/calendar";
+import {requestCalendar, requestFilteredCalendar, createEvent, deleteEvent} from "../services/calendar";
 
 const GET_EVENTS_REQUEST = 'calendar/events/GET_EVENTS_REQUEST'
 const GET_EVENTS_SUCCESS = 'calendar/events/GET_EVENTS_SUCCESS'
@@ -13,9 +13,9 @@ const CREATE_EVENT_REQUEST = 'calendar/events/CREATE_EVENT_REQUEST'
 const CREATE_EVENT_SUCCESS = 'calendar/events/CREATE_EVENT_SUCCESS'
 const CREATE_EVENT_FAILURE = 'calendar/events/CREATE_EVENT_FAILURE'
 
-// const DELETE_MEMO_REQUEST = 'memos/memos/DELETE_MEMO_REQUEST'
-// const DELETE_MEMO_SUCCESS = 'memos/memos/DELETE_MEMO_SUCCESS'
-// const DELETE_MEMO_FAILURE = 'memos/memos/DELETE_MEMO_FAILURE'
+const DELETE_EVENT_REQUEST = 'calendar/events/DELETE_EVENT_REQUEST'
+const DELETE_EVENT_SUCCESS = 'calendar/events/DELETE_EVENT_SUCCESS'
+const DELETE_EVENT_FAILURE = 'calendar/events/DELETE_EVENT_FAILURE'
 
 //reducer
 const initialState = {
@@ -25,7 +25,9 @@ const initialState = {
     postFilteredEventsPending: false,
     postFilteredEventsFailure: false,
     createEventPending: false,
-    createEventFailure: false
+    createEventFailure: false,
+    deleteEventFailure: false,
+    deleteEventPending: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -90,24 +92,24 @@ export default function reducer(state = initialState, action) {
                 createEventFailure: true
             }
 
-        // case DELETE_MEMO_REQUEST:
-        //     return {...state,
-        //         deleteMemoPending: true,
-        //         deleteMemoFailure: false}
-        //
-        // case DELETE_MEMO_SUCCESS:
-        //     return {
-        //         ...state,
-        //         deleteMemoPending: false,
-        //         deleteMemoFailure: false
-        //     }
-        //
-        // case DELETE_MEMO_FAILURE:
-        //     return {
-        //         ...state,
-        //         deleteMemoPending: false,
-        //         deleteMemoFailure: true
-        //     }
+        case DELETE_EVENT_REQUEST:
+            return {...state,
+                deleteEventPending: true,
+                deleteEventFailure: false}
+
+        case DELETE_EVENT_SUCCESS:
+            return {
+                ...state,
+                deleteEventPending: false,
+                deleteEventFailure: false
+            }
+
+        case DELETE_EVENT_FAILURE:
+            return {
+                ...state,
+                deleteEventPending: false,
+                deleteEventFailure: true
+            }
         default:
             return state
     }
@@ -157,17 +159,17 @@ function createEventFailure() {
     return {type: CREATE_EVENT_FAILURE}
 }
 
-// function deleteEventRequest() {
-//     return {type: DELETE_EVENT_REQUEST}
-// }
-//
-// function deleteEventSuccess() {
-//     return {type: DELETE_EVENT_SUCCESS}
-// }
-//
-// function deleteEventFailure() {
-//     return {type: DELETE_EVENT_FAILURE}
-// }
+function deleteEventRequest() {
+    return {type: DELETE_EVENT_REQUEST}
+}
+
+function deleteEventSuccess() {
+    return {type: DELETE_EVENT_SUCCESS}
+}
+
+function deleteEventFailure() {
+    return {type: DELETE_EVENT_FAILURE}
+}
 
 //side effects
 export function initiateGetEvents() {
@@ -192,7 +194,7 @@ export function initiateGetEvents() {
 
 export function initiatePostEventsInWindow(window) {
     return function postEventsInWindow(dispatch, getState) {
-        console.log(window)
+        console.log(` initiate post events window date: ${window.window_start}, ${window.window_end}`)
         // const stringWindow = JSON.stringify(window)
         // console.log(stringWindow)
         dispatch(postFilteredEventsRequest())
@@ -243,29 +245,29 @@ export function initiateCreateEvent(event) {
     }
 }
 
-// export function initiateDeleteMemo(memo) {
-//     return function deleteMemoDispatcher(dispatch, getState) {
-//         dispatch(deleteMemoRequest())
-//         deleteMemo(getState().user.token, memo).then(response => {
-//             if (!response.ok) {
-//                 dispatch(deleteMemoFailure())
-//                 return
-//             }
-//
-//             response.json().then(json => {
-//                 if (!json.message) {
-//                     dispatch(deleteMemoFailure())
-//                     return
-//                 }
-//
-//                 if (json.message !== 'delete') {
-//                     dispatch(deleteMemoFailure())
-//                     return
-//                 }
-//
-//                 dispatch(deleteMemoSuccess())
-//                 dispatch(initiateGetMemos())
-//             }, () => dispatch(deleteMemoFailure()))
-//         }, () => dispatch(deleteMemoFailure()))
-//     }
-// }
+export function initiateDeleteEvent(event) {
+    return function deleteEventDispatcher(dispatch, getState) {
+        dispatch(deleteEventRequest())
+        deleteEvent(getState().user.token, event).then(response => {
+            if (!response.ok) {
+                dispatch(deleteEventFailure())
+                return
+            }
+
+            response.json().then(json => {
+                if (!json.message) {
+                    dispatch(deleteEventFailure())
+                    return
+                }
+
+                if (json.message !== 'delete') {
+                    dispatch(deleteEventFailure())
+                    return
+                }
+
+                dispatch(deleteEventSuccess())
+                dispatch(initiateGetEvents())
+            }, () => dispatch(deleteEventFailure()))
+        }, () => dispatch(deleteEventFailure()))
+    }
+}

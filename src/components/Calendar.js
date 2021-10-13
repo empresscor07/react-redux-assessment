@@ -1,12 +1,14 @@
-import {Button, Row, Col, Toast, ToastContainer, Form, Modal} from 'react-bootstrap'
+import {Button, Row, Col, Toast, ToastContainer} from 'react-bootstrap'
 import {useEffect, useState} from "react";
 import Event from './Event.js';
 import NewEvent from "./NewEvent";
 import FilterEvents from "./FilterEvents"
+import LoadingEvent from "./LoadingEvent";
 
 function Events({
                     handleLogoutRequest,
                     handleFilterEvents,
+                    handleDeleteEvent,
                     events,
                     getEventsPending,
                     getEventsFailure,
@@ -15,12 +17,11 @@ function Events({
                     handleCreateEvent,
                     createEventPending,
                     createEventFailure,
-    // deleteEventPending,
-    // deleteEventFailure
+                    deleteEventPending,
+                    deleteEventFailure
 
 
 }) {
-    console.log(events);
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [showError, setShowError] = useState(getEventsFailure);
@@ -28,9 +29,13 @@ function Events({
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleFilterClose = () => setShowFilter(false);
-    const handleFilterShow = () => setShowFilter(true);
+    const handleFilterShow = async () => {
+
+        await setShowFilter(true);
+        console.log(showFilter);
+    }
     const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
-    // const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
+    const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
 
 
     //TODO these don't show up at the right time yet
@@ -52,11 +57,11 @@ function Events({
         }
     }, [createEventFailure])
 
-    // useEffect(() => {
-    //     if (deleteEventFailure) {
-    //         setDeleteEventError(true)
-    //     }
-    // }, [deleteEventFailure])
+    useEffect(() => {
+        if (deleteEventFailure) {
+            setDeleteEventError(true)
+        }
+    }, [deleteEventFailure])
 
 
     // async function onFilterClick(event) {
@@ -88,19 +93,21 @@ function Events({
     return (
         <>
             <NewEvent show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>
-            <FilterEvents show={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>
+            <FilterEvents showFilter={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>
             <Row className='mt-3'>
                 <Col><h1>Events:</h1></Col>
                 <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
-                <Col xs='auto'><Button onClick={handleFilterShow}>Filter</Button></Col>
-                <Col xs='auto'><Button variant='outline-primary' onClick={handleLogoutRequest}>Logout</Button></Col>
+                <Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>
+                <Col xs='auto'><Button variant='outline-danger' onClick={handleLogoutRequest}>Logout</Button></Col>
             </Row>
             <Row>
                 {
                     events && !getEventsPending ?
-                        events.map((event, idx) => <Event key={idx} event={event}
-                                                       // handleDeleteEvent={handleDeleteEvent}
-                                                       // deleteEventPending={deleteEventPending}
+                        events.map((event, idx) => <Event
+                            key={idx}
+                            event={event}
+                            handleDeleteEvent={handleDeleteEvent}
+                            deleteEventPending={deleteEventPending}
                             />) :
                         <h2>Loading...</h2>
                 }
@@ -115,11 +122,11 @@ function Events({
                 <Toast bg='danger' onClose={() => setCreateEventError(false)} show={showCreateEventError} delay={3000} autohide>
                     <Toast.Body className={'text-white'}>Error Creating memo</Toast.Body>
                 </Toast>
-                {/*<Toast bg='danger' onClose={() => setDeleteMemoError(false)} show={showDeleteMemoError} delay={3000} autohide>*/}
-                {/*    <Toast.Body className={'text-white'}>Error deleting memo</Toast.Body>*/}
-                {/*</Toast>*/}
+                <Toast bg='danger' onClose={() => setDeleteEventError(false)} show={showDeleteEventError} delay={3000} autohide>
+                    <Toast.Body className={'text-white'}>Error deleting memo</Toast.Body>
+                </Toast>
             </ToastContainer>
-            {/*{createMemoPending && <LoadingMemo/>}*/}
+            {createEventPending && <LoadingEvent/>}
         </>
     );
 }

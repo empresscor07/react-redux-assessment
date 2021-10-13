@@ -4,7 +4,7 @@ import Events from './components/Calendar'
 import {connect} from "react-redux";
 import {initiateLogin, logout} from "./modules/user";
 // import {createMemo, deleteMemo} from "./services/memos";
-import {initiatePostEventsInWindow, initiateCreateEvent} from "./modules/calendar";
+import {initiatePostEventsInWindow, initiateCreateEvent, initiateDeleteEvent} from "./modules/calendar";
 
 function App({
                  dispatch,
@@ -17,9 +17,9 @@ function App({
                  postFilteredEventsPending,
                  events,
                  createEventPending,
-                 createEventFailure
-                 // deleteEventFailure,
-                 // deleteEventPending
+                 createEventFailure,
+                 deleteEventFailure,
+                 deleteEventPending
     }) {
 
   // function handleError (error) {
@@ -29,8 +29,8 @@ function App({
   function handleFilterEvents(window) {
       // const windowStart = JSON.stringify(window_start)
       // const windowEnd = JSON.stringify(window_end)
-      console.log(` made it to the handle request events in window ${window}`)
-      dispatch(initiatePostEventsInWindow({window}))
+      // console.log(` made it to the handle request events in window ${window.window_end}`)
+      dispatch(initiatePostEventsInWindow(window))
   }
 
   function handleLoginRequest(username, password) {
@@ -41,13 +41,7 @@ function App({
     dispatch(logout())
   }
 
-  // function handleCreateMemo(memo) {
-  //   createMemo(token, memo).then(data => data.json(), handleError).then(json => {
-  //     console.log(json)
-  //     handleRequestMemos();
-  //   }, handleError).catch(handleError)
-  //
-  // }
+
   //
   // async function handleDeleteMemo(memo) {
   //   await deleteMemo(token, memo)
@@ -66,6 +60,7 @@ function App({
                   handleLogoutRequest={handleLogoutRequest}
                   events={events}
                   handleFilterEvents={handleFilterEvents}
+                  handleDeleteEvent={event => dispatch(initiateDeleteEvent(event))}
                   getEventsPending={getEventsPending}
                   getEventsFailure={getEventsFailure}
                   postFilteredEventsFailure={postFilteredEventsFailure}
@@ -73,8 +68,8 @@ function App({
                   handleCreateEvent={event => dispatch(initiateCreateEvent(event))}
                   createEventPending={createEventPending}
                   createEventFailure={createEventFailure}
-                  // deleteEventPending={deleteEventPending}
-                  // deleteEventFailure={deleteEventFailure}
+                  deleteEventPending={deleteEventPending}
+                  deleteEventFailure={deleteEventFailure}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

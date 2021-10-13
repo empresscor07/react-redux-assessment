@@ -7,6 +7,7 @@ import {createStore, applyMiddleware, combineReducers} from 'redux'
 import user from './modules/user'
 import events from './modules/calendar'
 import {Provider} from "react-redux";
+// import logger from 'redux-logger';
 
 //allows redux to handle side-effects /async calls
 const asyncMiddleware = storeAPI => next => action => {

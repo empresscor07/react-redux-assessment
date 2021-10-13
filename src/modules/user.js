@@ -58,7 +58,7 @@ export function loginRequest() {
 }
 
 export function loginSuccess(token) {
-    console.log(token)
+    // console.log(token)
     return {type: LOGIN_SUCCESS, token: token}
 }
 
