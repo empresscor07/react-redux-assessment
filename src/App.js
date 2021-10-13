@@ -1,27 +1,36 @@
 import {Container} from 'react-bootstrap';
 import Login from './components/Login';
 import Events from './components/Calendar'
-// import {createMemo, deleteMemo} from "./services/memos";
 import {connect} from "react-redux";
 import {initiateLogin, logout} from "./modules/user";
-import {initiateGetEvents, initiatePostEventsInWindow} from "./modules/calendar";
+// import {createMemo, deleteMemo} from "./services/memos";
+import {initiatePostEventsInWindow, initiateCreateEvent} from "./modules/calendar";
 
 function App({
-               dispatch,
-               loginPending,
-               loginFailure,
-               token,
-               getEventsPending,
-               getEventsFailure,
-               events}) {
+                 dispatch,
+                 loginPending,
+                 loginFailure,
+                 token,
+                 getEventsPending,
+                 getEventsFailure,
+                 postFilteredEventsFailure,
+                 postFilteredEventsPending,
+                 events,
+                 createEventPending,
+                 createEventFailure
+                 // deleteEventFailure,
+                 // deleteEventPending
+    }) {
 
   // function handleError (error) {
   //   console.log(error)
   // }
 
-  function handleRequestEventsInWindow(window_start, window_end) {
-    const window = JSON.stringify({window_start, window_end})
-    dispatch(initiatePostEventsInWindow(window))
+  function handleFilterEvents(window) {
+      // const windowStart = JSON.stringify(window_start)
+      // const windowEnd = JSON.stringify(window_end)
+      console.log(` made it to the handle request events in window ${window}`)
+      dispatch(initiatePostEventsInWindow({window}))
   }
 
   function handleLoginRequest(username, password) {
@@ -56,7 +65,16 @@ function App({
               <Events
                   handleLogoutRequest={handleLogoutRequest}
                   events={events}
-                  handleRequestEventsInWindow={handleRequestEventsInWindow}
+                  handleFilterEvents={handleFilterEvents}
+                  getEventsPending={getEventsPending}
+                  getEventsFailure={getEventsFailure}
+                  postFilteredEventsFailure={postFilteredEventsFailure}
+                  postFilteredEventsPending={postFilteredEventsPending}
+                  handleCreateEvent={event => dispatch(initiateCreateEvent(event))}
+                  createEventPending={createEventPending}
+                  createEventFailure={createEventFailure}
+                  // deleteEventPending={deleteEventPending}
+                  // deleteEventFailure={deleteEventFailure}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

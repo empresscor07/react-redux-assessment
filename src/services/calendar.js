@@ -20,23 +20,23 @@ export function requestFilteredCalendar(token, window) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
         },
-        body: window
+        body: JSON.stringify(window)
     })
 }
 
-// export function createMemo(token, memo) {
-//     console.log(token)
-//     console.log(memo)
-//     return fetch(base_url + 'memo', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': 'Bearer ' + token
-//         },
-//         body: JSON.stringify(memo)
-//     })
-// }
-//
+export function createEvent(token, event) {
+    console.log(token)
+    console.log(event)
+    return fetch(base_url + 'calendar/events', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(event)
+    })
+}
+
 // export function deleteMemo(token, memo) {
 //     console.log(memo)
 //     return fetch(base_url + 'memo/' + memo.id, {

@@ -1,31 +1,74 @@
-import {Button, Row, Col, Card, Placeholder, Modal, Form, Badge} from 'react-bootstrap'
-import {useState} from "react";
+import {Button, Row, Col, Toast, ToastContainer, Form, Modal} from 'react-bootstrap'
+import {useEffect, useState} from "react";
+import Event from './Event.js';
+import NewEvent from "./NewEvent";
+import FilterEvents from "./FilterEvents"
 
-function Events({handleLogoutRequest, handleRequestEventsInWindow, events}) {
+function Events({
+                    handleLogoutRequest,
+                    handleFilterEvents,
+                    events,
+                    getEventsPending,
+                    getEventsFailure,
+                    postFilteredEventsPending,
+                    postFilteredEventsFailure,
+                    handleCreateEvent,
+                    createEventPending,
+                    createEventFailure,
+    // deleteEventPending,
+    // deleteEventFailure
+
+
+}) {
     console.log(events);
-    // const [show, setShow] = useState(false);
-    // const [title, setTitle] = useState('');
-    // const [startTime, setStartTime] = useState('');
-    // const [endTime, setEndTime] = useState('');
-    const [window_start, setStartWindow] = useState('');
-    const [window_end, setEndWindow] = useState('');
-    // const handleClose = () => setShow(false);
-    // const handleShow = () => setShow(true);
-    // const window = {
-    //     window_start: '2021-10-01T00:00:00.000Z',
-    //     window_end: '2021-12-31T09:00:00.000Z'
+    const [show, setShow] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
+    const [showError, setShowError] = useState(getEventsFailure);
+    const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const handleFilterClose = () => setShowFilter(false);
+    const handleFilterShow = () => setShowFilter(true);
+    const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
+    // const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
+
+
+    //TODO these don't show up at the right time yet
+    useEffect(() => {
+        if (getEventsFailure) {
+            setShowError(true)
+        }
+    }, [getEventsFailure])
+
+    useEffect(() => {
+        if (postFilteredEventsFailure) {
+            setPostFilterError(true)
+        }
+    }, [postFilteredEventsFailure])
+
+    useEffect(() => {
+        if (createEventFailure) {
+            setCreateEventError(true)
+        }
+    }, [createEventFailure])
+
+    // useEffect(() => {
+    //     if (deleteEventFailure) {
+    //         setDeleteEventError(true)
+    //     }
+    // }, [deleteEventFailure])
+
+
+    // async function onFilterClick(event) {
+    //
+    //      await setStartWindow('2021-10-01T00:00:00.000Z')
+    //      await setEndWindow('2021-11-31T09:00:00.000Z')
+    //
+    //     console.log(`window start: ${window_start}`)
+    //     handleRequestEventsInWindow(window_start, window_end)
+    //     // event.target.value = 'Remove Filter'
+    //
     // }
-
-    function onFilterClick() {
-        // const window = {
-        //     window_start: '2021-10-01T00:00:00.000Z',
-        //     window_end: '2021-12-31T09:00:00.000Z'
-        // }
-        setStartWindow('2021-10-01T00:00:00.000Z')
-        setEndWindow('2021-11-31T09:00:00.000Z')
-        handleRequestEventsInWindow(window_start, window_end)
-
-    }
     // function handleSubmit(event) {
     //     event.preventDefault();
     //     console.log({content, memoTags});
@@ -44,63 +87,39 @@ function Events({handleLogoutRequest, handleRequestEventsInWindow, events}) {
 
     return (
         <>
-            {/*<Modal show={show} onHide={handleClose}>*/}
-            {/*    <Modal.Header closeButton>*/}
-            {/*        <Modal.Title>New Memo</Modal.Title>*/}
-            {/*    </Modal.Header>*/}
-
-            {/*    <Modal.Body>*/}
-            {/*        <Form>*/}
-            {/*            <Form.Group className="mb-3" controlId="formBasicEmail">*/}
-            {/*                <Form.Label>User Name</Form.Label>*/}
-            {/*                <Form.Control type="text" placeholder="Enter your memo's text" onChange={handleTextChange} />*/}
-            {/*                <Form.Text className="text-muted">*/}
-            {/*                    We'll never share your email with anyone else.*/}
-            {/*                </Form.Text>*/}
-            {/*            </Form.Group>*/}
-
-            {/*            <Form.Group className="mb-3" controlId="formBasicPassword">*/}
-            {/*                <Form.Label>Tags</Form.Label>*/}
-            {/*                <Form.Control type="text" placeholder="Tag1, Tag2" onChange={handleTagChange}/>*/}
-            {/*            </Form.Group>*/}
-
-            {/*            <Button variant="primary" type="submit">*/}
-            {/*                Submit*/}
-            {/*            </Button>*/}
-            {/*        </Form>*/}
-            {/*    </Modal.Body>*/}
-            {/*</Modal>*/}
-
+            <NewEvent show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>
+            <FilterEvents show={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>
             <Row className='mt-3'>
-                <Col><h1>Welcome!</h1></Col>
-                {/*<Col xs='auto'><Button onClick={handleShow}>New</Button></Col>*/}
-                <Col xs='auto'><Button variant='success' onClick={onFilterClick}>Filter</Button></Col>
+                <Col><h1>Events:</h1></Col>
+                <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
+                <Col xs='auto'><Button onClick={handleFilterShow}>Filter</Button></Col>
                 <Col xs='auto'><Button variant='outline-primary' onClick={handleLogoutRequest}>Logout</Button></Col>
             </Row>
             <Row>
                 {
-                    events.map(event => {
-                        return (
-                            <Card style={{ width: '18rem' }}>
-                                <Card.Header>
-                                    {/*<Button variant="danger" onClick={() => handleDeleteMemo(memo)}>Delete</Button>*/}
-                                </Card.Header>
-                                <Card.Body>
-                                    <Card.Subtitle>
-                                        {event.start_timestamp}
-                                    </Card.Subtitle>
-                                    {event.title}
-                                </Card.Body>
-                                <Card.Footer>
-                                    {/*{memo.tags ? memo.tags.map(tag => {*/}
-                                    {/*        return (<Badge>{tag}</Badge>)}) :*/}
-                                    {/*    console.log('No tags')}*/}
-                                </Card.Footer>
-                            </Card>
-                        )
-                    })
+                    events && !getEventsPending ?
+                        events.map((event, idx) => <Event key={idx} event={event}
+                                                       // handleDeleteEvent={handleDeleteEvent}
+                                                       // deleteEventPending={deleteEventPending}
+                            />) :
+                        <h2>Loading...</h2>
                 }
             </Row>
+            <ToastContainer className="p-3" position='bottom-end'>
+                <Toast bg='danger' onClose={() => setShowError(false)} show={showError} delay={3000} autohide>
+                    <Toast.Body className={'text-white'}>Error retrieving memos</Toast.Body>
+                </Toast>
+                <Toast bg='danger' onClose={() => setPostFilterError(false)} show={postFilterError} delay={3000} autohide>
+                    <Toast.Body className={'text-white'}>Error retrieving filtered memos</Toast.Body>
+                </Toast>
+                <Toast bg='danger' onClose={() => setCreateEventError(false)} show={showCreateEventError} delay={3000} autohide>
+                    <Toast.Body className={'text-white'}>Error Creating memo</Toast.Body>
+                </Toast>
+                {/*<Toast bg='danger' onClose={() => setDeleteMemoError(false)} show={showDeleteMemoError} delay={3000} autohide>*/}
+                {/*    <Toast.Body className={'text-white'}>Error deleting memo</Toast.Body>*/}
+                {/*</Toast>*/}
+            </ToastContainer>
+            {/*{createMemoPending && <LoadingMemo/>}*/}
         </>
     );
 }
