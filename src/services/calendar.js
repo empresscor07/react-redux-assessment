@@ -48,3 +48,14 @@ export function deleteEvent(token, event) {
         //don't need body here because already getting the host_id through the token and the event id through URL
     })
 }
+
+export function requestEventById(token, event) {
+    // console.log('Running request event by id');
+    return fetch(base_url + 'calendar/events/' + event.id, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+    })
+}

@@ -2,7 +2,7 @@ import {Container} from 'react-bootstrap';
 import Login from './components/Login';
 import Events from './components/Calendar'
 import {connect} from "react-redux";
-import {initiateLogin, logout} from "./modules/user";
+import {initiateLogin, logout, initiateRegister} from "./modules/user";
 // import {createMemo, deleteMemo} from "./services/memos";
 import {initiatePostEventsInWindow, initiateCreateEvent, initiateDeleteEvent} from "./modules/calendar";
 
@@ -19,7 +19,9 @@ function App({
                  createEventPending,
                  createEventFailure,
                  deleteEventFailure,
-                 deleteEventPending
+                 deleteEventPending,
+                 createUserPending,
+                 createUserFailure
     }) {
 
   // function handleError (error) {
@@ -41,13 +43,9 @@ function App({
     dispatch(logout())
   }
 
-
-  //
-  // async function handleDeleteMemo(memo) {
-  //   await deleteMemo(token, memo)
-  //   handleRequestMemos();
-  //
-  // }
+function handleCreateUserRequest(username, password) {
+      dispatch(initiateRegister({username, password}))
+}
 
   return (
       <Container>
@@ -75,6 +73,9 @@ function App({
                   handleLoginRequest={handleLoginRequest}
                   loginFailure={loginFailure}
                   loginPending={loginPending}
+                  handleCreateUserRequest={handleCreateUserRequest}
+                  createUserPending={createUserPending}
+                  createUserFailure={createUserFailure}
               />
         }
       </Container>

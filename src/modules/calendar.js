@@ -1,5 +1,11 @@
 //actions
-import {requestCalendar, requestFilteredCalendar, createEvent, deleteEvent} from "../services/calendar";
+import {
+    requestCalendar,
+    requestFilteredCalendar,
+    createEvent,
+    deleteEvent,
+    requestEventById
+} from "../services/calendar";
 
 const GET_EVENTS_REQUEST = 'calendar/events/GET_EVENTS_REQUEST'
 const GET_EVENTS_SUCCESS = 'calendar/events/GET_EVENTS_SUCCESS'
@@ -17,6 +23,10 @@ const DELETE_EVENT_REQUEST = 'calendar/events/DELETE_EVENT_REQUEST'
 const DELETE_EVENT_SUCCESS = 'calendar/events/DELETE_EVENT_SUCCESS'
 const DELETE_EVENT_FAILURE = 'calendar/events/DELETE_EVENT_FAILURE'
 
+const GET_EVENT_BY_ID_REQUEST = 'calendar/events/GET_EVENT_BY_ID_REQUEST'
+const GET_EVENT_BY_ID_SUCCESS = 'calendar/events/GET_EVENT_BY_ID_SUCCESS'
+const GET_EVENT_BY_ID_FAILURE = 'calendar/events/GET_EVENT_BY_ID_FAILURE'
+
 //reducer
 const initialState = {
     getEventsPending: false,
@@ -27,7 +37,9 @@ const initialState = {
     createEventPending: false,
     createEventFailure: false,
     deleteEventFailure: false,
-    deleteEventPending: false
+    deleteEventPending: false,
+    getEventByIdPending: false,
+    getEventByIdFailure: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -75,8 +87,33 @@ export default function reducer(state = initialState, action) {
                 postFilteredEventsFailure: true,
             }
 
+        case GET_EVENT_BY_ID_REQUEST:
+            return {
+                ...state,
+                getEventByIdPending: true
+            }
+
+        case GET_EVENT_BY_ID_SUCCESS:
+            return {
+                ...state,
+                getEventByIdPending: false,
+                getEventByIdFailure: false,
+                events: action.events
+            }
+
+        case GET_EVENT_BY_ID_FAILURE:
+            return {
+                ...state,
+                getEventByIdPending: false,
+                getEventByIdFailure: true,
+            }
+
         case CREATE_EVENT_REQUEST:
-            return {...state, createEventPending: true}
+            return {
+                ...state,
+                createEventPending: true,
+                createEventFailure: false
+            }
 
         case CREATE_EVENT_SUCCESS:
             return {
@@ -147,6 +184,21 @@ export function postFilteredEventsFailure() {
     return {type: POST_FILTERED_EVENTS_FAILURE}
 }
 
+export function getEventByIdRequest() {
+    return {type: GET_EVENT_BY_ID_REQUEST}
+}
+
+export function getEventByIdSuccess(events) {
+    return {
+        type: GET_EVENT_BY_ID_SUCCESS,
+        events: events
+    }
+}
+
+export function getEventByIdFailure() {
+    return {type: GET_EVENT_BY_ID_FAILURE}
+}
+
 function createEventRequest() {
     return {type: CREATE_EVENT_REQUEST}
 }
@@ -214,6 +266,29 @@ export function initiatePostEventsInWindow(window) {
                 dispatch(postFilteredEventsSuccess(json.event_list))
             }, () => dispatch(postFilteredEventsFailure()))
         }, () => dispatch(postFilteredEventsFailure()))
+    }
+}
+
+export function initiateGetEventById(event) {
+    return function eventByIdDispatcher(dispatch, getState) {
+        dispatch(getEventByIdRequest())
+        requestEventById(getState().user.token, event).then(response => {
+            if (!response.ok) {
+                dispatch(getEventByIdFailure())
+                return
+            }
+
+            response.json().then(json => {
+                if (!json.event_list) {
+                    console.log(`no event details found`)
+                    dispatch(getEventByIdFailure())
+                    return
+                }
+
+                dispatch(getEventByIdSuccess(json.event_list[0]))
+                // dispatch(initiateGetEvents())
+            }, () => dispatch(getEventByIdFailure()))
+        }, () => dispatch(getEventByIdFailure()))
     }
 }
 

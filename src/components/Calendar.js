@@ -1,4 +1,4 @@
-import {Button, Row, Col, Toast, ToastContainer} from 'react-bootstrap'
+import {Button, Row, Col, Toast, ToastContainer, Offcanvas} from 'react-bootstrap'
 import {useEffect, useState} from "react";
 import Event from './Event.js';
 import NewEvent from "./NewEvent";
@@ -62,33 +62,6 @@ function Events({
             setDeleteEventError(true)
         }
     }, [deleteEventFailure])
-
-
-    // async function onFilterClick(event) {
-    //
-    //      await setStartWindow('2021-10-01T00:00:00.000Z')
-    //      await setEndWindow('2021-11-31T09:00:00.000Z')
-    //
-    //     console.log(`window start: ${window_start}`)
-    //     handleRequestEventsInWindow(window_start, window_end)
-    //     // event.target.value = 'Remove Filter'
-    //
-    // }
-    // function handleSubmit(event) {
-    //     event.preventDefault();
-    //     console.log({content, memoTags});
-    //     const tags = memoTags.split(',');
-    //     handleCreateMemo({content, tags});
-    //     handleClose();
-    // }
-    //
-    // function handleTextChange(event) {
-    //     setContent(event.target.value)
-    // }
-    //
-    // function handleTagChange(event) {
-    //     setTags(event.target.value)
-    // }
 
     return (
         <>

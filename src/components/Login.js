@@ -1,13 +1,19 @@
 import {Row, Col, Form, Button, Alert} from 'react-bootstrap';
 import { useState } from 'react';
 
-function Login({handleLoginRequest, loginPending, loginFailure}) {
+function Login({handleLoginRequest, loginPending, loginFailure, createUserPending, handleCreateUserRequest, createUserFailure}) {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     function handleLogin (event) {
         event.preventDefault();
         console.log(`Welcome ${username}!`);
         handleLoginRequest(username, password);
+    }
+
+    function handleCreateUser (event) {
+        event.preventDefault();
+        console.log(`Welcome ${username}!`);
+        handleCreateUserRequest(username, password);
     }
 
     function onUsernameChange(event) {
@@ -38,6 +44,9 @@ function Login({handleLoginRequest, loginPending, loginFailure}) {
 
                         <Button variant="primary" type="submit" disabled={loginPending}>
                             {loginPending ? 'Logging in...' : 'Submit'}
+                        </Button>
+                        <Button variant="success" onClick={handleCreateUser} disabled={createUserPending}>
+                            {createUserPending ? 'Registering...' : 'Create User'}
                         </Button>
                     </Form>
                 </Col>

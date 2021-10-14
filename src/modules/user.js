@@ -1,4 +1,4 @@
-import {requestLogin} from "../services/user";
+import {requestLogin, createUser} from "../services/user";
 import {initiateGetEvents} from "./calendar";
 
 // Actions
@@ -7,13 +7,18 @@ const LOGIN_SUCCESS = 'calendar/user/LOGIN_SUCCESS' //backend initiated
 const LOGIN_FAILURE = 'calendar/user/LOGIN_FAILURE' //backend initiated
 const LOGOUT = 'calendar/user/LOGOUT' //user side initiated
 
+const CREATE_USER_REQUEST = 'calendar/user/CREATE_USER_REQUEST'
+const CREATE_USER_SUCCESS = 'calendar/user/CREATE_USER_SUCCESS'
+const CREATE_USER_FAILURE = 'calendar/user/CREATE_USER_FAILURE'
 
 // Reducer
 //define initial state
 const initialState = {
     loginPending: false,
     loginFailure: false,
-    token: ''
+    token: '',
+    createUserPending: false,
+    createUserFailure: false
 }
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -38,6 +43,29 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 loginPending: false,
                 loginFailure: true
+            };
+
+        case CREATE_USER_REQUEST:
+            return {
+                // deconstruct state
+                ...state,
+                // set one value to true
+                createUserPending: true
+            };
+
+        case CREATE_USER_SUCCESS:
+            return {
+                ...state,
+                createUserPending: false,
+                createUserFailure: false,
+                // token: action.token
+            };
+
+        case CREATE_USER_FAILURE:
+            return {
+                ...state,
+                createUserPending: false,
+                createUserFailure: true
             };
 
         case LOGOUT:
@@ -66,6 +94,18 @@ export function loginFailure() {
     return {type: LOGIN_FAILURE}
 }
 
+export function createUserRequest() {
+    return {type: CREATE_USER_REQUEST}
+}
+
+export function createUserSuccess() {
+    return {type: CREATE_USER_SUCCESS}
+}
+
+export function createUserFailure() {
+    return {type: CREATE_USER_FAILURE}
+}
+
 export function logout() {
     return {type: LOGOUT}
 }
@@ -88,6 +128,20 @@ export function initiateLogin(credentials) {
                 dispatch(loginSuccess(data.token))
                 dispatch(initiateGetEvents())
             })
+        })
+    }
+}
+
+export function initiateRegister(credentials) {
+    return function register(dispatch) {
+        dispatch(createUserRequest())
+        createUser(credentials).then(response => {
+            if (!response.ok) {
+                dispatch(createUserFailure())
+                return
+            }
+            dispatch(createUserSuccess())
+            dispatch(initiateLogin(credentials))
         })
     }
 }
