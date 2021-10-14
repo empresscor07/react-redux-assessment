@@ -4,8 +4,9 @@ import Event from './Event.js';
 import NewEvent from "./NewEvent";
 import FilterEvents from "./FilterEvents"
 import LoadingEvent from "./LoadingEvent";
+import InviteByEvent from "./InviteByEvent";
 
-function Events({
+function Calendar({
                     handleLogoutRequest,
                     handleFilterEvents,
                     handleDeleteEvent,
@@ -18,8 +19,10 @@ function Events({
                     createEventPending,
                     createEventFailure,
                     deleteEventPending,
-                    deleteEventFailure
-
+                    deleteEventFailure,
+                    invitesByEvent,
+                    getInvitesPending,
+                    getInvitesFailure
 
 }) {
     const [show, setShow] = useState(false);
@@ -62,7 +65,8 @@ function Events({
             setDeleteEventError(true)
         }
     }, [deleteEventFailure])
-
+    // console.log('This is the calendar page')
+    // console.log(invitesByEvent)
     return (
         <>
             <NewEvent show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>
@@ -85,6 +89,32 @@ function Events({
                         <h2>Loading...</h2>
                 }
             </Row>
+            {/*<NewInvite show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>*/}
+            {/*<FilterEvents showFilter={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>*/}
+            <Row className='mt-3'>
+                <Col><h1>Invites:</h1></Col>
+                {/*<Col xs='auto'><Button onClick={handleShow}>New</Button></Col>*/}
+                {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
+            </Row>
+            <Row>
+                {
+                    invitesByEvent && !getInvitesPending ?
+                        invitesByEvent.map((invite, idx) => <InviteByEvent
+                            key={idx}
+                            invite={invite}
+                            // handleDeleteEvent={handleDeleteEvent}
+                            // deleteEventPending={deleteEventPending}
+                        />) :
+                        <h2>Loading...</h2>
+                }
+            </Row>
+            <Row>
+                This is where Reminders will display
+            </Row>
+            <Row>
+                This is where Tasks will display
+            </Row>
+
             <ToastContainer className="p-3" position='bottom-end'>
                 <Toast bg='danger' onClose={() => setShowError(false)} show={showError} delay={3000} autohide>
                     <Toast.Body className={'text-white'}>Error retrieving memos</Toast.Body>
@@ -104,4 +134,4 @@ function Events({
     );
 }
 
-export default Events;
+export default Calendar;

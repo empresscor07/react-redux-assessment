@@ -1,4 +1,3 @@
-//actions
 import {
     requestCalendar,
     requestFilteredCalendar,
@@ -6,6 +5,11 @@ import {
     deleteEvent,
     requestEventById
 } from "../services/calendar";
+
+//ACTIONS
+// plain JavaScript object that must have a type attribute to indicate
+// the type of action performed. It tells us what had happened.
+// Types should be defined as string constants in your application as given below
 
 const GET_EVENTS_REQUEST = 'calendar/events/GET_EVENTS_REQUEST'
 const GET_EVENTS_SUCCESS = 'calendar/events/GET_EVENTS_SUCCESS'
@@ -27,7 +31,14 @@ const GET_EVENT_BY_ID_REQUEST = 'calendar/events/GET_EVENT_BY_ID_REQUEST'
 const GET_EVENT_BY_ID_SUCCESS = 'calendar/events/GET_EVENT_BY_ID_SUCCESS'
 const GET_EVENT_BY_ID_FAILURE = 'calendar/events/GET_EVENT_BY_ID_FAILURE'
 
-//reducer
+
+// REDUCER
+// Actions and states are held together by a function called Reducer.
+// An action is dispatched with an intention to cause change.
+// This change is performed by the reducer.
+// Reducer is the only way to change states in Redux
+
+//First we define variables to hold initial state values and set them
 const initialState = {
     getEventsPending: false,
     getEventsFailure: false,
@@ -42,6 +53,7 @@ const initialState = {
     getEventByIdFailure: false
 }
 
+//Switch case function to return state values based on the type of action executed
 export default function reducer(state = initialState, action) {
     switch (action.type) {
 
@@ -147,13 +159,20 @@ export default function reducer(state = initialState, action) {
                 deleteEventPending: false,
                 deleteEventFailure: true
             }
+
         default:
             return state
     }
 }
 
 
-//action creators
+//ACTION CREATORS
+//An action is a plain object that describes the intention to cause change with a type property.
+// It must have a type property which tells what type of action is being performed.
+//Action creators are the functions that encapsulate the process of creation of an action object.
+// These functions simply return a plain Js object which is an action.
+// It promotes writing clean code and helps to achieve re-usability.
+
 export function getEventsRequest() {
     return {type: GET_EVENTS_REQUEST}
 }
@@ -223,7 +242,19 @@ function deleteEventFailure() {
     return {type: DELETE_EVENT_FAILURE}
 }
 
-//side effects
+// SIDE EFFECTS
+// Web apps need to execute complex logic,
+// usually including asynchronous work such as making AJAX requests.
+// That code is no longer purely a function of its inputs,
+// and the interactions with the outside world are known as “side effects”
+// Redux is inspired by functional programming,
+// and out of the box, has no place for side effects to be executed.
+// In particular, reducer functions must always be pure functions of
+// (state, action) => newState. However, Redux's middleware makes it possible
+// to intercept dispatched actions and add additional complex behavior around them,
+// including side effects.
+
+//dispatch allows you to dispatch an action to change a state in your application.
 export function initiateGetEvents() {
     return function getEvents(dispatch, getState) {
         dispatch(getEventsRequest())

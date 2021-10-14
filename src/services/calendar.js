@@ -1,5 +1,6 @@
 const base_url = 'http://localhost:3000/api/'
 
+// CALENDAR EVENTS
 export function requestCalendar(token) {
     // console.log(JSON.stringify(window));
     return fetch(base_url + 'calendar/events', {
@@ -11,7 +12,6 @@ export function requestCalendar(token) {
         // body: JSON.stringify(window)
     })
 }
-
 
 export function requestFilteredCalendar(token, window) {
     console.log(window.window_start, window.window_end)
@@ -59,3 +59,4 @@ export function requestEventById(token, event) {
         },
     })
 }
+

@@ -1,10 +1,11 @@
 import {Container} from 'react-bootstrap';
 import Login from './components/Login';
-import Events from './components/Calendar'
+import Calendar from './components/Calendar';
 import {connect} from "react-redux";
 import {initiateLogin, logout, initiateRegister} from "./modules/user";
 // import {createMemo, deleteMemo} from "./services/memos";
 import {initiatePostEventsInWindow, initiateCreateEvent, initiateDeleteEvent} from "./modules/calendar";
+import {initiateGetInvites} from "./modules/invites";
 
 function App({
                  dispatch,
@@ -21,13 +22,18 @@ function App({
                  deleteEventFailure,
                  deleteEventPending,
                  createUserPending,
-                 createUserFailure
+                 createUserFailure,
+                 invitesByEvent,
+                 getInvitesPending,
+                 getInvitesFailure
     }) {
 
   // function handleError (error) {
   //   console.log(error)
   // }
-
+  //   console.log('Showing invitesbyevent object below')
+  //   console.log(invitesByEvent)
+  //   console.log(events)
   function handleFilterEvents(window) {
       // const windowStart = JSON.stringify(window_start)
       // const windowEnd = JSON.stringify(window_end)
@@ -54,7 +60,7 @@ function handleCreateUserRequest(username, password) {
           //else run login function to render login screen again.
           token ?
               //pass param with handle login or logout function as the value
-              <Events
+              <Calendar
                   handleLogoutRequest={handleLogoutRequest}
                   events={events}
                   handleFilterEvents={handleFilterEvents}
@@ -68,6 +74,7 @@ function handleCreateUserRequest(username, password) {
                   createEventFailure={createEventFailure}
                   deleteEventPending={deleteEventPending}
                   deleteEventFailure={deleteEventFailure}
+                  invitesByEvent={invitesByEvent}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}
@@ -84,7 +91,7 @@ function handleCreateUserRequest(username, password) {
 
 function mapStateToProps(state) {
   //return copy of state
-  return {...state.user, ...state.events}
+  return {...state.user, ...state.events, ...state.invitesByEvent, ...state.invites}
 }
 
 

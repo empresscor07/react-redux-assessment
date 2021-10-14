@@ -1,5 +1,6 @@
 import {requestLogin, createUser} from "../services/user";
 import {initiateGetEvents} from "./calendar";
+import {initiateGetInvites} from "./invites";
 
 // Actions
 const LOGIN_REQUEST = 'calendar/user/LOGIN_REQUEST' //user side initiated
@@ -125,8 +126,11 @@ export function initiateLogin(credentials) {
                     dispatch(loginFailure())
                     return
                 }
+
                 dispatch(loginSuccess(data.token))
+                console.log('Load is working - should get events and invites')
                 dispatch(initiateGetEvents())
+                dispatch(initiateGetInvites())
             })
         })
     }
