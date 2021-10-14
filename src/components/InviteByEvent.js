@@ -2,8 +2,6 @@ import {Card, CloseButton, Col, Offcanvas, Row, Spinner, Badge, Button} from "re
 import {useState, useEffect} from "react";
 //handleDeleteEvent, deleteEventPending put below as parameter
 export default function InviteByEvent({invite}) {
-    console.log('showing invite inside invite by event component')
-    console.log(invite)
     // const [deletePending, setDeletePending] = useState(false)
     const [showDetails, setShowDetails] = useState(false);
 

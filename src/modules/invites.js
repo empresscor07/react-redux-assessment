@@ -26,11 +26,11 @@ export default function reducer(state = initialState, action) {
         case GET_INVITES_REQUEST:
             return {
                 ...state,
-                getInvitesPending: true
+                getInvitesPending: true,
+                getInvitesFailed: false
             }
 
         case GET_INVITES_SUCCESS:
-            console.log('use case returning with invite success')
             return {
                 ...state,
                 getInvitesPending: false,
@@ -70,18 +70,15 @@ export function getInvitesFailure() {
 
 //SIDE EFFECTS
 export function initiateGetInvites() {
-    console.log('calling initiate get invites')
     return function getInvites(dispatch, getState) {
         dispatch(getInvitesRequest())
         requestInvites(getState().user.token).then(response => {
-            console.log('request returned')
             if (!response.ok) {
                 dispatch(getInvitesFailure())
                 return
             }
 
             response.json().then(json => {
-                // console.log(json)
                 if (!json.invite_list) {
                     dispatch(getInvitesFailure())
                     console.log('no invite_list in returned json')

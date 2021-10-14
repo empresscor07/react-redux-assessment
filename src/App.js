@@ -4,7 +4,12 @@ import Calendar from './components/Calendar';
 import {connect} from "react-redux";
 import {initiateLogin, logout, initiateRegister} from "./modules/user";
 // import {createMemo, deleteMemo} from "./services/memos";
-import {initiatePostEventsInWindow, initiateCreateEvent, initiateDeleteEvent} from "./modules/calendar";
+import {
+    initiatePostEventsInWindow,
+    initiateCreateEvent,
+    initiateDeleteEvent,
+    initiateGetEvents
+} from "./modules/calendar";
 import {initiateGetInvites} from "./modules/invites";
 
 function App({
@@ -40,6 +45,10 @@ function App({
       // console.log(` made it to the handle request events in window ${window.window_end}`)
       dispatch(initiatePostEventsInWindow(window))
   }
+  // resets events to show all after filter has been applied
+  function handleResetEvents() {
+      dispatch(initiateGetEvents())
+  }
 
   function handleLoginRequest(username, password) {
     dispatch(initiateLogin({username, password}))
@@ -51,6 +60,10 @@ function App({
 
 function handleCreateUserRequest(username, password) {
       dispatch(initiateRegister({username, password}))
+}
+
+function handleCreateEvent(event) {
+    dispatch(initiateCreateEvent(event))
 }
 
   return (
@@ -69,12 +82,13 @@ function handleCreateUserRequest(username, password) {
                   getEventsFailure={getEventsFailure}
                   postFilteredEventsFailure={postFilteredEventsFailure}
                   postFilteredEventsPending={postFilteredEventsPending}
-                  handleCreateEvent={event => dispatch(initiateCreateEvent(event))}
+                  handleCreateEvent={handleCreateEvent}
                   createEventPending={createEventPending}
                   createEventFailure={createEventFailure}
                   deleteEventPending={deleteEventPending}
                   deleteEventFailure={deleteEventFailure}
                   invitesByEvent={invitesByEvent}
+                  handleResetEvents={handleResetEvents}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

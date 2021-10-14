@@ -15,6 +15,7 @@ function Calendar({
                     getEventsFailure,
                     postFilteredEventsPending,
                     postFilteredEventsFailure,
+                    handleResetEvents,
                     handleCreateEvent,
                     createEventPending,
                     createEventFailure,
@@ -29,17 +30,28 @@ function Calendar({
     const [showFilter, setShowFilter] = useState(false);
     const [showError, setShowError] = useState(getEventsFailure);
     const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
+    //handles switching text on filter button
+    const [showFilteredEventsReset, setShowFilteredEventsReset] = useState(false);
+    const [showGetInvitesError, setShowGetInvitesError] = useState(getInvitesFailure);
+    const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
+    const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleFilterClose = () => setShowFilter(false);
     const handleFilterShow = async () => {
-
-        await setShowFilter(true);
-        console.log(showFilter);
+        await setShowFilter(true)
+        await handleShowResetButton()
     }
-    const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
-    const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
-
+    function handleShowResetButton() {
+        setShowFilteredEventsReset(true);
+    }
+    function handleShowFilterButton() {
+        setShowFilteredEventsReset(false)
+    }
+    const resetEvents = async () => {
+        await handleResetEvents()
+        await handleShowFilterButton()
+    }
 
     //TODO these don't show up at the right time yet
     useEffect(() => {
@@ -65,6 +77,20 @@ function Calendar({
             setDeleteEventError(true)
         }
     }, [deleteEventFailure])
+
+    useEffect(() => {
+        if (getInvitesFailure) {
+            setShowGetInvitesError(true)
+        }
+    }, [getInvitesFailure])
+
+    // handles switching text on filter button
+    // useEffect(() => {
+    //     if (postFilteredEventsSuccess) {
+    //         setShowFilteredEventsReset(true)
+    //     }
+    // }, [postFilteredEventsSuccess])
+    console.log(showFilteredEventsReset);
     // console.log('This is the calendar page')
     // console.log(invitesByEvent)
     return (
@@ -74,12 +100,18 @@ function Calendar({
             <Row className='mt-3'>
                 <Col><h1>Events:</h1></Col>
                 <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
-                <Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>
+                <Col xs='auto'>
+                {
+                    showFilteredEventsReset ?
+                        <Button variant='outline-success' onClick={resetEvents}>Reset</Button> :
+                        <Button variant='success' onClick={handleFilterShow}>Filter</Button>
+                }
+                </Col>
                 <Col xs='auto'><Button variant='outline-danger' onClick={handleLogoutRequest}>Logout</Button></Col>
             </Row>
             <Row>
                 {
-                    events && !getEventsPending ?
+                    events && !(getEventsPending || postFilteredEventsPending) ?
                         events.map((event, idx) => <Event
                             key={idx}
                             event={event}
@@ -89,11 +121,10 @@ function Calendar({
                         <h2>Loading...</h2>
                 }
             </Row>
-            {/*<NewInvite show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>*/}
+            {/*<NewInviteResponse show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>*/}
             {/*<FilterEvents showFilter={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>*/}
             <Row className='mt-3'>
                 <Col><h1>Invites:</h1></Col>
-                {/*<Col xs='auto'><Button onClick={handleShow}>New</Button></Col>*/}
                 {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
             </Row>
             <Row>
@@ -120,14 +151,19 @@ function Calendar({
                     <Toast.Body className={'text-white'}>Error retrieving memos</Toast.Body>
                 </Toast>
                 <Toast bg='danger' onClose={() => setPostFilterError(false)} show={postFilterError} delay={3000} autohide>
-                    <Toast.Body className={'text-white'}>Error retrieving filtered memos</Toast.Body>
+                    <Toast.Body className={'text-white'}>Error retrieving filtered Events</Toast.Body>
                 </Toast>
                 <Toast bg='danger' onClose={() => setCreateEventError(false)} show={showCreateEventError} delay={3000} autohide>
-                    <Toast.Body className={'text-white'}>Error Creating memo</Toast.Body>
+                    <Toast.Body className={'text-white'}>Error Creating Event</Toast.Body>
                 </Toast>
                 <Toast bg='danger' onClose={() => setDeleteEventError(false)} show={showDeleteEventError} delay={3000} autohide>
-                    <Toast.Body className={'text-white'}>Error deleting memo</Toast.Body>
+                    <Toast.Body className={'text-white'}>Error deleting event</Toast.Body>
                 </Toast>
+                <Toast bg='danger' onClose={() => setShowGetInvitesError(false)} show={showGetInvitesError} delay={3000} autohide>
+                    <Toast.Body className={'text-white'}>Error retrieving Invites</Toast.Body>
+                </Toast>
+                {/*// todo add errors for get invites, update event, edit invite, create reminder, show reminders by date range,*/}
+                {/*// todo edit reminder, delete reminder, create task, show tasks by date range, edit task, delete a task*/}
             </ToastContainer>
             {createEventPending && <LoadingEvent/>}
         </>

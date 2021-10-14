@@ -45,6 +45,7 @@ const initialState = {
     events: [],
     postFilteredEventsPending: false,
     postFilteredEventsFailure: false,
+    postFilteredEventsSuccess: false,
     createEventPending: false,
     createEventFailure: false,
     deleteEventFailure: false,
@@ -60,7 +61,8 @@ export default function reducer(state = initialState, action) {
         case GET_EVENTS_REQUEST:
             return {
                 ...state,
-                getEventsPending: true
+                getEventsPending: true,
+                postFilteredEventsSuccess: false //this is here to allow toggling between filter and reset button
             }
 
         case GET_EVENTS_SUCCESS:
@@ -89,6 +91,7 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 postFilteredEventsPending: false,
                 postFilteredEventsFailure: false,
+                postFilteredEventsSuccess: true,
                 events: action.events
             }
 

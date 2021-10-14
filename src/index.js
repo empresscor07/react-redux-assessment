@@ -26,7 +26,7 @@ const asyncMiddleware = storeAPI => next => action => {
 // Redux provides with API called applyMiddleware
 
 //The syntax of using applyMiddleware API is −
-const middlewareEnhancer = applyMiddleware(asyncMiddleware, logger)
+const middlewareEnhancer = applyMiddleware(asyncMiddleware, logger) //logger passed here if needed
 
 //A store is an immutable object tree in Redux.
 // A store is a state container which holds the application’s state.
