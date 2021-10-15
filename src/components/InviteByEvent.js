@@ -1,13 +1,25 @@
 import {Card, CloseButton, Col, Offcanvas, Row, Spinner, Badge, Button} from "react-bootstrap";
 import {useState, useEffect} from "react";
+import NewRSVP from "./NewRSVP";
 //handleDeleteEvent, deleteEventPending put below as parameter
-export default function InviteByEvent({invite}) {
+export default function InviteByEvent({invite, handlePostInvite}) {
     // const [deletePending, setDeletePending] = useState(false)
     const [showDetails, setShowDetails] = useState(false);
-
+    const [showRSVP, setShowRSVP] = useState(false);
     const handleCloseDetails = () => setShowDetails(false);
     const handleShowDetails = () => setShowDetails(true);
 
+
+
+    function handleRSVP() {
+        //modal pops up to allow user to check yes or no
+        setShowRSVP(true);
+        //does something with event id to and user id to create a an entry in invite table
+        //once table entry has been created, then display going vs not going and an edit response button
+    }
+    function handleCloseRSVP() {
+        setShowRSVP(false)
+    }
 
     function invite_date(invite) {
         const date = new Date(invite.start_timestamp);
@@ -20,7 +32,7 @@ export default function InviteByEvent({invite}) {
     const endTime = endDate.getTime()
     const raw_attendees = invite ? (invite.attendee_list ? invite.attendee_list : []) : []
     const attendee_list = raw_attendees.filter(tag => tag.length > 0)
-
+    // console.log(invite)
     // function onDelete() {
     //     setDeletePending(true)
     //     handleDeleteEvent(event)
@@ -32,7 +44,10 @@ export default function InviteByEvent({invite}) {
     //     }
     // }, [deleteEventPending])
 
-    return (<Col xs={3} className='my-3'>
+    return (
+        <>
+            <NewRSVP invite={invite} showRSVP={showRSVP} handleCloseRSVP={handleCloseRSVP} handlePostInvite={handlePostInvite}/>
+            <Col xs={3} className='my-3'>
             <Card border='dark'>
                 <Card.Body>
                     <Card.Subtitle><Row>
@@ -41,10 +56,14 @@ export default function InviteByEvent({invite}) {
                     </Row></Card.Subtitle>
                     <Card.Text>{invite.title}</Card.Text>
                 </Card.Body>
-                <Card.Footer border='warning'>
-                    <Button variant="info" onClick={handleShowDetails}>
+                <Card.Footer>
+                    <Button className='mt-1' variant="info" onClick={handleShowDetails}>
                         Details
                     </Button>
+                    <Button className='mx-lg-3 mt-1' variant="warning" onClick={handleRSVP}>
+                        RSVP
+                    </Button>
+
 
                 </Card.Footer>
 
@@ -72,6 +91,7 @@ export default function InviteByEvent({invite}) {
                     </Card.Footer>
                 }
             </Offcanvas>
-        </Col>
+            </Col>
+        </>
     )
 }

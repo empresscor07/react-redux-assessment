@@ -23,7 +23,11 @@ function Calendar({
                     deleteEventFailure,
                     invitesByEvent,
                     getInvitesPending,
-                    getInvitesFailure
+                    getInvitesFailed,
+                    handlePostInvite,
+                    postInvitesPending,
+                    postInvitesFailed,
+                    inviteResponses
 
 }) {
     const [show, setShow] = useState(false);
@@ -32,7 +36,7 @@ function Calendar({
     const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
     //handles switching text on filter button
     const [showFilteredEventsReset, setShowFilteredEventsReset] = useState(false);
-    const [showGetInvitesError, setShowGetInvitesError] = useState(getInvitesFailure);
+    const [showGetInvitesError, setShowGetInvitesError] = useState(getInvitesFailed);
     const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
     const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
     const handleClose = () => setShow(false);
@@ -79,10 +83,10 @@ function Calendar({
     }, [deleteEventFailure])
 
     useEffect(() => {
-        if (getInvitesFailure) {
+        if (getInvitesFailed) {
             setShowGetInvitesError(true)
         }
-    }, [getInvitesFailure])
+    }, [getInvitesFailed])
 
     // handles switching text on filter button
     // useEffect(() => {
@@ -90,7 +94,7 @@ function Calendar({
     //         setShowFilteredEventsReset(true)
     //     }
     // }, [postFilteredEventsSuccess])
-    console.log(showFilteredEventsReset);
+    // console.log(showFilteredEventsReset);
     // console.log('This is the calendar page')
     // console.log(invitesByEvent)
     return (
@@ -133,6 +137,7 @@ function Calendar({
                         invitesByEvent.map((invite, idx) => <InviteByEvent
                             key={idx}
                             invite={invite}
+                            handlePostInvite={handlePostInvite}
                             // handleDeleteEvent={handleDeleteEvent}
                             // deleteEventPending={deleteEventPending}
                         />) :

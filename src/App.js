@@ -10,7 +10,7 @@ import {
     initiateDeleteEvent,
     initiateGetEvents
 } from "./modules/calendar";
-import {initiateGetInvites} from "./modules/invites";
+import {initiatePostInvite} from "./modules/invites";
 
 function App({
                  dispatch,
@@ -66,6 +66,12 @@ function handleCreateEvent(event) {
     dispatch(initiateCreateEvent(event))
 }
 
+function handlePostInvite(invite, accepted) {
+      console.log(invite)
+      console.log(accepted)
+      dispatch(initiatePostInvite(invite, accepted))
+}
+
   return (
       <Container>
         {
@@ -89,6 +95,7 @@ function handleCreateEvent(event) {
                   deleteEventFailure={deleteEventFailure}
                   invitesByEvent={invitesByEvent}
                   handleResetEvents={handleResetEvents}
+                  handlePostInvite={handlePostInvite}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}
