@@ -3,12 +3,12 @@ import Login from './components/Login';
 import Calendar from './components/Calendar';
 import {connect} from "react-redux";
 import {initiateLogin, logout, initiateRegister} from "./modules/user";
-// import {createMemo, deleteMemo} from "./services/memos";
 import {
     initiatePostEventsInWindow,
     initiateCreateEvent,
     initiateDeleteEvent,
-    initiateGetEvents
+    initiateGetEvents,
+    initiatePutEvent
 } from "./modules/calendar";
 import {initiatePostInvite} from "./modules/invites";
 
@@ -26,11 +26,13 @@ function App({
                  createEventFailure,
                  deleteEventFailure,
                  deleteEventPending,
+                 putEventPending,
+                 putEventFailed,
                  createUserPending,
                  createUserFailure,
                  invitesByEvent,
                  getInvitesPending,
-                 getInvitesFailure
+                 getInvitesFailed
     }) {
 
   // function handleError (error) {
@@ -72,6 +74,10 @@ function handlePostInvite(invite, accepted) {
       dispatch(initiatePostInvite(invite, accepted))
 }
 
+function handlePutEvent(event) {
+      dispatch(initiatePutEvent(event))
+}
+
   return (
       <Container>
         {
@@ -96,6 +102,9 @@ function handlePostInvite(invite, accepted) {
                   invitesByEvent={invitesByEvent}
                   handleResetEvents={handleResetEvents}
                   handlePostInvite={handlePostInvite}
+                  handlePutEvent={handlePutEvent}
+                  putEventPending={putEventPending}
+                  putEventFailed={putEventFailed}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

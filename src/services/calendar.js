@@ -60,3 +60,16 @@ export function requestEventById(token, event) {
     })
 }
 
+//the event will already be changed locally and sent in the body to have values read on back end
+export function putEvent(token, event) {
+    console.log(event)
+    return fetch(base_url + 'calendar/events/' + event.id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(event)
+    })
+}
+

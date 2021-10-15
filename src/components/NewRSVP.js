@@ -3,17 +3,28 @@ import {useState} from "react";
 
 export default function NewRSVP({invite, showRSVP, handleCloseRSVP, handlePostInvite}) {
     const [accepted, setAccepted] = useState(false);
-    const [inviteRowCreated, setInviteRowCreated] = useState(false);
+    const [currentEvent, setCurrentEvent] = useState({});
+    const [alreadyClicked, setAlreadyClicked] = useState(false);
 
     async function handleRadioClick(event) {
         await setAccepted(event.target.value)
     }
 
     async function handleAcceptedClick() {
-            handleCloseRSVP()
-            handlePostInvite(invite, accepted)
-            await setInviteRowCreated(true)
+        handleCloseRSVP()
+        handlePostInvite(invite, accepted)
+        await setAlreadyClicked(true)
     }
+
+    function handleAcceptedUpdatedClick() {
+        handleCloseRSVP()
+        console.log('RSVP updated!')
+        // handlePostInvite(invite, accepted)
+        // await setCurrentEvent(invite)
+
+    }
+
+    //do some stuff
 
     return (
         <Modal show={showRSVP} onHide={handleCloseRSVP}>
@@ -43,9 +54,11 @@ export default function NewRSVP({invite, showRSVP, handleCloseRSVP, handlePostIn
                             value='false'
                         />
                     </Form.Group>
-                    <Button variant="primary" onClick={handleAcceptedClick}>
-                        Send Response
-                    </Button>
+                    {
+                        !alreadyClicked ?
+                            <Button variant="primary" onClick={handleAcceptedClick}>Send RSVP</Button> :
+                            <Button variant="success" onClick={handleAcceptedUpdatedClick}>Update RSVP</Button>
+                    }
                 </Form>
             </Modal.Body>
         </Modal>

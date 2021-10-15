@@ -6,6 +6,7 @@ export default function InviteByEvent({invite, handlePostInvite}) {
     // const [deletePending, setDeletePending] = useState(false)
     const [showDetails, setShowDetails] = useState(false);
     const [showRSVP, setShowRSVP] = useState(false);
+    const [disabled, setDisabled] = useState(false);
     const handleCloseDetails = () => setShowDetails(false);
     const handleShowDetails = () => setShowDetails(true);
 
@@ -14,16 +15,24 @@ export default function InviteByEvent({invite, handlePostInvite}) {
     function handleRSVP() {
         //modal pops up to allow user to check yes or no
         setShowRSVP(true);
+        setDisabled(true);
         //does something with event id to and user id to create a an entry in invite table
         //once table entry has been created, then display going vs not going and an edit response button
     }
     function handleCloseRSVP() {
         setShowRSVP(false)
+
     }
 
     function invite_date(invite) {
         const date = new Date(invite.start_timestamp);
         return (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear()
+    }
+
+    function handleSeeRSVPResponse() {
+        console.log('See RSVP response click')
+        //will call the get invite by id here
+        //place where we will display if user is going or not only visible once invite row created
     }
 
     const startDate = new Date(invite.start_timestamp)
@@ -60,9 +69,12 @@ export default function InviteByEvent({invite, handlePostInvite}) {
                     <Button className='mt-1' variant="info" onClick={handleShowDetails}>
                         Details
                     </Button>
-                    <Button className='mx-lg-3 mt-1' variant="warning" onClick={handleRSVP}>
+                    <Button className='mx-3 mt-1' disabled={disabled} variant="warning" onClick={handleRSVP}>
                         RSVP
                     </Button>
+                    {/*<Button className='mt-1' variant="success" onClick={handleSeeRSVPResponse}>*/}
+                    {/*    Edit*/}
+                    {/*</Button>*/}
 
 
                 </Card.Footer>

@@ -27,7 +27,8 @@ function Calendar({
                     handlePostInvite,
                     postInvitesPending,
                     postInvitesFailed,
-                    inviteResponses
+                    inviteResponses,
+                    handlePutEvent
 
 }) {
     const [show, setShow] = useState(false);
@@ -121,6 +122,7 @@ function Calendar({
                             event={event}
                             handleDeleteEvent={handleDeleteEvent}
                             deleteEventPending={deleteEventPending}
+                            handlePutEvent={handlePutEvent}
                             />) :
                         <h2>Loading...</h2>
                 }

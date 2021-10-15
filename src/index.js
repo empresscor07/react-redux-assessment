@@ -8,7 +8,7 @@ import user from './modules/user'
 import events from './modules/calendar'
 import invites from './modules/invites'
 import {Provider} from "react-redux";
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 
 //allows redux to handle side-effects /async calls
 const asyncMiddleware = storeAPI => next => action => {
@@ -26,7 +26,7 @@ const asyncMiddleware = storeAPI => next => action => {
 // Redux provides with API called applyMiddleware
 
 //The syntax of using applyMiddleware API is −
-const middlewareEnhancer = applyMiddleware(asyncMiddleware, logger) //logger passed here if needed
+const middlewareEnhancer = applyMiddleware(asyncMiddleware) //logger passed here if needed
 
 //A store is an immutable object tree in Redux.
 // A store is a state container which holds the application’s state.

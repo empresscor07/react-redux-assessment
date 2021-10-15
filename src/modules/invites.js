@@ -1,6 +1,7 @@
 import {
     requestInvites,
-    postInvite
+    postInvite,
+    putInvite
 } from "../services/invites";
 import {requestFilteredCalendar} from "../services/calendar";
 import {postFilteredEventsFailure, postFilteredEventsRequest, postFilteredEventsSuccess} from "./calendar";
@@ -17,6 +18,10 @@ const GET_INVITES_FAILURE = 'calendar/invite/GET_INVITES_FAILURE'
 const POST_INVITE_REQUEST = 'calendar/invite/POST_INVITE_REQUEST'
 const POST_INVITE_SUCCESS = 'calendar/invite/POST_INVITE_SUCCESS'
 const POST_INVITE_FAILURE = 'calendar/invite/POST_INVITE_FAILURE'
+
+const PUT_INVITE_REQUEST = 'calendar/invite/PUT_INVITE_REQUEST'
+const PUT_INVITE_SUCCESS = 'calendar/invite/PUT_INVITE_SUCCESS'
+const PUT_INVITE_FAILURE = 'calendar/invite/PUT_INVITE_FAILURE'
 //REDUCERS
 const initialState = {
     getInvitesPending: false,
@@ -24,7 +29,9 @@ const initialState = {
     postInvitePending: false,
     postInviteFailed: false,
     invitesByEvent: [],
-    inviteResponses: []
+    inviteResponses: [],
+    putInvitePending: false,
+    putInviteFailed: false
 }
 
 //Switch case function to return state values based on the type of action executed
@@ -74,6 +81,27 @@ export default function reducer(state = initialState, action) {
                 postInviteFailed: true
             }
 
+        case PUT_INVITE_REQUEST:
+            return {
+                ...state,
+                putInvitePending: true,
+                putInviteFailed: false
+            }
+
+        case PUT_INVITE_SUCCESS:
+            return {
+                ...state,
+                putInvitePending: false,
+                putInviteFailed: false,
+            }
+
+        case PUT_INVITE_FAILURE:
+            return {
+                ...state,
+                putInvitePending: false,
+                putInviteFailed: true
+            }
+
         default:
             return state
     }
@@ -107,6 +135,18 @@ export function postInviteSuccess() {
 
 export function postInviteFailure() {
     return {type: GET_INVITES_FAILURE}
+}
+
+export function putInviteRequest() {
+    return {type: PUT_INVITE_REQUEST}
+}
+
+export function putInviteSuccess() {
+    return {type: PUT_INVITE_SUCCESS}
+}
+
+export function putInviteFailure() {
+    return {type: PUT_INVITE_FAILURE}
 }
 
 //SIDE EFFECTS
@@ -157,5 +197,33 @@ export function initiatePostInvite(invite, accepted) {
                 dispatch(postInviteSuccess())
             }, () => dispatch(postInviteFailure()))
         }, () => dispatch(postInviteFailure()))
+    }
+}
+
+export function initiatePutInvite(inviteRSVP, accepted) {
+    return function postInviteDispatcher(dispatch, getState) {
+        console.log(` initiate post invite values: ${inviteRSVP.id}, accepted: ${accepted}`)
+        // console.log(stringWindow)
+        dispatch(putInviteRequest())
+        putInvite(getState().user.token, inviteRSVP, accepted).then(response => {
+            if (!response.ok) {
+                console.log('response not ok')
+                dispatch(putInviteFailure())
+                return
+            }
+            response.json().then(json => {
+                if (!json.message) {
+                    dispatch(putInviteFailure())
+                    return
+                }
+
+                if (json.message !== 'updated') {
+                    dispatch(putInviteFailure())
+                    return
+                }
+
+                dispatch(putInviteSuccess())
+            }, () => dispatch(putInviteFailure()))
+        }, () => dispatch(putInviteFailure()))
     }
 }

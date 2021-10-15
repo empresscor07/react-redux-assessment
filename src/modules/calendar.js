@@ -3,7 +3,8 @@ import {
     requestFilteredCalendar,
     createEvent,
     deleteEvent,
-    requestEventById
+    requestEventById,
+    putEvent
 } from "../services/calendar";
 
 //ACTIONS
@@ -31,6 +32,9 @@ const GET_EVENT_BY_ID_REQUEST = 'calendar/events/GET_EVENT_BY_ID_REQUEST'
 const GET_EVENT_BY_ID_SUCCESS = 'calendar/events/GET_EVENT_BY_ID_SUCCESS'
 const GET_EVENT_BY_ID_FAILURE = 'calendar/events/GET_EVENT_BY_ID_FAILURE'
 
+const PUT_EVENT_REQUEST = 'calendar/events/PUT_EVENT_REQUEST'
+const PUT_EVENT_SUCCESS = 'calendar/events/PUT_EVENT_SUCCESS'
+const PUT_EVENT_FAILURE = 'calendar/events/PUT_EVENT_FAILURE'
 
 // REDUCER
 // Actions and states are held together by a function called Reducer.
@@ -51,7 +55,9 @@ const initialState = {
     deleteEventFailure: false,
     deleteEventPending: false,
     getEventByIdPending: false,
-    getEventByIdFailure: false
+    getEventByIdFailure: false,
+    putEventPending: false,
+    putEventFailed: false
 }
 
 //Switch case function to return state values based on the type of action executed
@@ -163,6 +169,25 @@ export default function reducer(state = initialState, action) {
                 deleteEventFailure: true
             }
 
+        case PUT_EVENT_REQUEST:
+            return {...state,
+                putEventPending: true,
+                putEventFailure: false}
+
+        case PUT_EVENT_SUCCESS:
+            return {
+                ...state,
+                putEventPending: false,
+                putEventFailure: false
+            }
+
+        case PUT_EVENT_FAILURE:
+            return {
+                ...state,
+                putEventPending: false,
+                putEventFailure: true
+            }
+
         default:
             return state
     }
@@ -244,6 +269,20 @@ function deleteEventSuccess() {
 function deleteEventFailure() {
     return {type: DELETE_EVENT_FAILURE}
 }
+
+function putEventRequest(){
+    return {type: PUT_EVENT_REQUEST}
+}
+
+function putEventSuccess(){
+    return {type: PUT_EVENT_SUCCESS}
+}
+
+function putEventFailure(){
+    return {type: PUT_EVENT_FAILURE}
+}
+
+
 
 // SIDE EFFECTS
 // Web apps need to execute complex logic,
@@ -378,5 +417,32 @@ export function initiateDeleteEvent(event) {
                 dispatch(initiateGetEvents())
             }, () => dispatch(deleteEventFailure()))
         }, () => dispatch(deleteEventFailure()))
+    }
+}
+
+export function initiatePutEvent(event) {
+    return function putEventDispatcher(dispatch, getState) {
+        dispatch(putEventRequest())
+        putEvent(getState().user.token, event).then(response => {
+            if (!response.ok) {
+                dispatch(putEventFailure())
+                return
+            }
+
+            response.json().then(json => {
+                if (!json.message) {
+                    dispatch(putEventFailure())
+                    return
+                }
+
+                if (json.message !== 'delete') {
+                    dispatch(putEventFailure())
+                    return
+                }
+
+                dispatch(putEventSuccess())
+                dispatch(initiateGetEvents())
+            }, () => dispatch(putEventFailure()))
+        }, () => dispatch(putEventFailure()))
     }
 }
