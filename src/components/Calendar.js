@@ -34,7 +34,10 @@ function Calendar({
                     tasks,
                     getTasksPending,
                     getTasksFailed,
-                    handlePostTask
+                    handlePostTask,
+                    handleDeleteTask,
+                    deleteTaskPending,
+                    deleteTaskFailed
 
 }) {
     const [show, setShow] = useState(false);
@@ -175,8 +178,8 @@ function Calendar({
                             key={idx}
                             task={task}
                             handlePostTask={handlePostTask}
-                            // handleDeleteEvent={handleDeleteEvent}
-                            // deleteEventPending={deleteEventPending}
+                            handleDeleteTask={handleDeleteTask}
+                            deleteTaskPending={deleteTaskPending}
                         />) :
                         <h2>Loading...</h2>
                 }

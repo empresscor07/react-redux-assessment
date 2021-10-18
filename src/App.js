@@ -11,7 +11,7 @@ import {
     initiatePutEvent
 } from "./modules/calendar";
 import {initiatePostInvite} from "./modules/invites";
-import {initiatePostTask} from "./modules/tasks";
+import {initiateDeleteTask, initiatePostTask} from "./modules/tasks";
 // I think we need to list the parts of each state that we will be using here as params,
 // otherwise would need to put in params as a whole and
 // then use notation params.events, params.createEventPending
@@ -39,7 +39,9 @@ function App({
                  getInvitesFailed,
                  tasks,
                  getTasksPending,
-                 getTasksFailed
+                 getTasksFailed,
+                deleteTaskPending,
+                deleteTaskFailed
 
     }) {
 
@@ -100,6 +102,12 @@ function handlePostTask(task) {
       dispatch(initiatePostTask(task))
   }
 
+  function handleDeleteTask(task) {
+      console.log("I will be deleting an event here!")
+      console.log(task)
+      dispatch(initiateDeleteTask(task))
+  }
+
   return (
       <Container>
         {
@@ -132,6 +140,9 @@ function handlePostTask(task) {
                   getTasksPending={getTasksPending}
                   getTasksFailed={getTasksFailed}
                   handlePostTask={handlePostTask}
+                  handleDeleteTask={handleDeleteTask}
+                  deleteTaskPending={deleteTaskPending}
+                  deleteTaskFailed={deleteTaskFailed}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

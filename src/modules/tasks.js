@@ -1,6 +1,7 @@
 import {
     requestTasks,
-    postTask
+    postTask,
+    deleteTask
 } from "../services/tasks";
 
 //ACTIONS
@@ -14,7 +15,11 @@ const GET_TASKS_FAILURE = 'calendar/task/GET_TASKS_FAILURE'
 
 const POST_TASK_REQUEST = 'calendar/task/POST_TASK_REQUEST'
 const POST_TASK_SUCCESS = 'calendar/task/POST_TASK_SUCCESS'
-const POST_TASKS_FAILURE = 'calendar/task/POST_TASKS_FAILURE'
+const POST_TASK_FAILURE = 'calendar/task/POST_TASK_FAILURE'
+
+const DELETE_TASK_REQUEST = 'calendar/task/DELETE_TASK_REQUEST'
+const DELETE_TASK_SUCCESS = 'calendar/task/DELETE_TASK_SUCCESS'
+const DELETE_TASK_FAILURE = 'calendar/task/DELETE_TASK_FAILURE'
 
 //REDUCERS
 const initialState = {
@@ -22,7 +27,9 @@ const initialState = {
     getTasksFailed: false,
     tasks: [],
     postTaskPending: false,
-    postTaskFailed: false
+    postTaskFailed: false,
+    deleteTaskPending: false,
+    deleteTaskFailed: false
 }
 
 //Switch case function to return state values based on the type of action executed
@@ -61,10 +68,27 @@ export default function reducer(state = initialState, action) {
                 postTaskPending: false,
                 postTaskFailed: false
             }
-        case POST_TASKS_FAILURE:
+        case POST_TASK_FAILURE:
             return {
                 postTaskPending: false,
                 postTaskFailed: true
+            }
+
+        case DELETE_TASK_REQUEST:
+            return {
+                ...state,
+                deleteTaskPending: true
+            }
+        case DELETE_TASK_SUCCESS:
+            return {
+                ...state,
+                deleteTaskPending: false,
+                deleteTaskFailed: false
+            }
+        case DELETE_TASK_FAILURE:
+            return {
+                deleteTaskPending: false,
+                deleteTaskFailed: true
             }
 
         default:
@@ -97,7 +121,19 @@ export function postTaskSuccess() {
 }
 
 export function postTaskFailure() {
-    return {type: POST_TASKS_FAILURE}
+    return {type: POST_TASK_FAILURE}
+}
+
+export function deleteTaskRequest() {
+    return {type: DELETE_TASK_REQUEST}
+}
+
+export function deleteTaskSuccess() {
+    return {type: DELETE_TASK_SUCCESS}
+}
+
+export function deleteTaskFailure() {
+    return {type: DELETE_TASK_FAILURE}
 }
 
 //SIDE EFFECTS
@@ -148,5 +184,32 @@ export function initiatePostTask(task) {
                 dispatch(initiateGetTasks())
             }, () => dispatch(postTaskFailure()))
         }, () => dispatch(postTaskFailure()))
+    }
+}
+
+export function initiateDeleteTask(task) {
+    return function deleteTaskDispatcher(dispatch, getState) {
+        dispatch(deleteTaskRequest())
+        deleteTask(getState().user.token, task).then(response => {
+            if (!response.ok) {
+                dispatch(deleteTaskFailure())
+                return
+            }
+
+            response.json().then(json => {
+                if (!json.message) {
+                    dispatch(deleteTaskFailure())
+                    return
+                }
+
+                if (json.message !== 'deleted') {
+                    dispatch(deleteTaskFailure())
+                    return
+                }
+
+                dispatch(deleteTaskSuccess())
+                dispatch(initiateGetTasks())
+            }, () => dispatch(deleteTaskFailure()))
+        }, () => dispatch(deleteTaskFailure()))
     }
 }

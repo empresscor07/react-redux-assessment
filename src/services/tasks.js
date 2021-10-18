@@ -24,3 +24,14 @@ export function postTask(token, task) {
         body: JSON.stringify(task)
     })
 }
+
+export function deleteTask(token, task) {
+    return fetch(base_url + 'calendar/task/' + task.id, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        //don't need body here because already getting the host_id through the token and the task id through URL
+    })
+}
