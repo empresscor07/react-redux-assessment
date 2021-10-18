@@ -6,6 +6,7 @@ import FilterEvents from "./FilterEvents"
 import LoadingEvent from "./LoadingEvent";
 import InviteByEvent from "./InviteByEvent";
 import Task from "./Task";
+import NewTask from "./NewTask";
 
 function Calendar({
                     handleLogoutRequest,
@@ -32,11 +33,13 @@ function Calendar({
                     handlePutEvent,
                     tasks,
                     getTasksPending,
-                    getTasksFailed
+                    getTasksFailed,
+                    handlePostTask
 
 }) {
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+    const [showNewTask, setShowNewTask] = useState(false);
     const [showError, setShowError] = useState(getEventsFailure);
     const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
     //handles switching text on filter button
@@ -46,6 +49,8 @@ function Calendar({
     const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleCloseNewTask = () => setShowNewTask(false);
+    const handleShowNewTask = () => setShowNewTask(true);
     const handleFilterClose = () => setShowFilter(false);
     const handleFilterShow = async () => {
         await setShowFilter(true)
@@ -108,7 +113,7 @@ function Calendar({
             <FilterEvents showFilter={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>
             <Row className='mt-3'>
                 <Col><h1>Events:</h1></Col>
-                <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
+                <Col xs='auto'><Button onClick={handleShow}>New Event</Button></Col>
                 <Col xs='auto'>
                 {
                     showFilteredEventsReset ?
@@ -150,9 +155,10 @@ function Calendar({
                         <h2>Loading...</h2>
                 }
             </Row>
+            <NewTask showNewTask={showNewTask} handleCloseNewTask={handleCloseNewTask} handlePostTask={handlePostTask}/>
             <Row className='mt-3'>
                 <Col><h1>Tasks:</h1></Col>
-                <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
+                <Col xs='auto'><Button onClick={handleShowNewTask}>New Task</Button></Col>
                 <Col xs='auto'>
                     {
                         showFilteredEventsReset ?
@@ -168,7 +174,7 @@ function Calendar({
                         tasks.map((task, idx) => <Task
                             key={idx}
                             task={task}
-                            // handlePostInvite={handlePostInvite}
+                            handlePostTask={handlePostTask}
                             // handleDeleteEvent={handleDeleteEvent}
                             // deleteEventPending={deleteEventPending}
                         />) :

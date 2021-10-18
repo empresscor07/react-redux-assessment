@@ -28,9 +28,9 @@ const DELETE_EVENT_REQUEST = 'calendar/events/DELETE_EVENT_REQUEST'
 const DELETE_EVENT_SUCCESS = 'calendar/events/DELETE_EVENT_SUCCESS'
 const DELETE_EVENT_FAILURE = 'calendar/events/DELETE_EVENT_FAILURE'
 
-const GET_EVENT_BY_ID_REQUEST = 'calendar/events/GET_EVENT_BY_ID_REQUEST'
-const GET_EVENT_BY_ID_SUCCESS = 'calendar/events/GET_EVENT_BY_ID_SUCCESS'
-const GET_EVENT_BY_ID_FAILURE = 'calendar/events/GET_EVENT_BY_ID_FAILURE'
+// const GET_EVENT_BY_ID_REQUEST = 'calendar/events/GET_EVENT_BY_ID_REQUEST'
+// const GET_EVENT_BY_ID_SUCCESS = 'calendar/events/GET_EVENT_BY_ID_SUCCESS'
+// const GET_EVENT_BY_ID_FAILURE = 'calendar/events/GET_EVENT_BY_ID_FAILURE'
 
 const PUT_EVENT_REQUEST = 'calendar/events/PUT_EVENT_REQUEST'
 const PUT_EVENT_SUCCESS = 'calendar/events/PUT_EVENT_SUCCESS'
