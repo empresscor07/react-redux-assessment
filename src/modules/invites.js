@@ -1,7 +1,7 @@
 import {
     requestInvites,
     postInvite,
-    putInvite
+    // putInvite
 } from "../services/invites";
 import {requestFilteredCalendar} from "../services/calendar";
 import {postFilteredEventsFailure, postFilteredEventsRequest, postFilteredEventsSuccess} from "./calendar";
@@ -41,8 +41,7 @@ export default function reducer(state = initialState, action) {
         case GET_INVITES_REQUEST:
             return {
                 ...state,
-                getInvitesPending: true,
-                getInvitesFailed: false
+                getInvitesPending: true
             }
 
         case GET_INVITES_SUCCESS:
@@ -113,8 +112,8 @@ export function getInvitesRequest() {
 }
 
 export function getInvitesSuccess(invitesByEvent) {
-    // console.log('invite success function triggered')
-    // console.log(invitesByEvent)
+    console.log('invite success function triggered')
+    console.log(invitesByEvent)
     return {
         type: GET_INVITES_SUCCESS,
         invitesByEvent: invitesByEvent
@@ -165,7 +164,8 @@ export function initiateGetInvites() {
                     console.log('no invite_list in returned json')
                     return
                 }
-
+                console.log(json.invite_list)
+                console.log('my invite list now ')
                 dispatch(getInvitesSuccess(json.invite_list))
             }, () => dispatch(getInvitesFailure()))
         }, () => dispatch(getInvitesFailure()))
@@ -200,30 +200,30 @@ export function initiatePostInvite(invite, accepted) {
     }
 }
 
-export function initiatePutInvite(inviteRSVP, accepted) {
-    return function postInviteDispatcher(dispatch, getState) {
-        console.log(` initiate post invite values: ${inviteRSVP.id}, accepted: ${accepted}`)
-        // console.log(stringWindow)
-        dispatch(putInviteRequest())
-        putInvite(getState().user.token, inviteRSVP, accepted).then(response => {
-            if (!response.ok) {
-                console.log('response not ok')
-                dispatch(putInviteFailure())
-                return
-            }
-            response.json().then(json => {
-                if (!json.message) {
-                    dispatch(putInviteFailure())
-                    return
-                }
-
-                if (json.message !== 'updated') {
-                    dispatch(putInviteFailure())
-                    return
-                }
-
-                dispatch(putInviteSuccess())
-            }, () => dispatch(putInviteFailure()))
-        }, () => dispatch(putInviteFailure()))
-    }
-}
+// export function initiatePutInvite(inviteRSVP, accepted) {
+//     return function postInviteDispatcher(dispatch, getState) {
+//         console.log(` initiate post invite values: ${inviteRSVP.id}, accepted: ${accepted}`)
+//         // console.log(stringWindow)
+//         dispatch(putInviteRequest())
+//         putInvite(getState().user.token, inviteRSVP, accepted).then(response => {
+//             if (!response.ok) {
+//                 console.log('response not ok')
+//                 dispatch(putInviteFailure())
+//                 return
+//             }
+//             response.json().then(json => {
+//                 if (!json.message) {
+//                     dispatch(putInviteFailure())
+//                     return
+//                 }
+//
+//                 if (json.message !== 'updated') {
+//                     dispatch(putInviteFailure())
+//                     return
+//                 }
+//
+//                 dispatch(putInviteSuccess())
+//             }, () => dispatch(putInviteFailure()))
+//         }, () => dispatch(putInviteFailure()))
+//     }
+// }

@@ -1,6 +1,7 @@
 import {requestLogin, createUser} from "../services/user";
 import {initiateGetEvents} from "./calendar";
 import {initiateGetInvites} from "./invites";
+import {initiateGetTasks} from "./tasks";
 
 // Actions
 const LOGIN_REQUEST = 'calendar/user/LOGIN_REQUEST' //user side initiated
@@ -131,6 +132,7 @@ export function initiateLogin(credentials) {
                 console.log('Load is working - should get events and invites')
                 dispatch(initiateGetEvents())
                 dispatch(initiateGetInvites())
+                dispatch(initiateGetTasks())
             })
         })
     }

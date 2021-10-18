@@ -28,14 +28,14 @@ export function postInvite(token, invite, accepted) {
     })
 }
 
-//inviteRSVP is the current invites table row we want to update
-export function putInvite(token, inviteRSVP, accepted) {
-    return fetch(base_url + 'calendar/invite/' + inviteRSVP.id, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify(inviteRSVP)
-    })
-}
+// //inviteRSVP is the current invites table row we want to update
+// export function putInvite(token, inviteRSVP, accepted) {
+//     return fetch(base_url + 'calendar/invite/' + inviteRSVP.id, {
+//         method: 'PUT',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': 'Bearer ' + token
+//         },
+//         body: JSON.stringify(inviteRSVP)
+//     })
+// }

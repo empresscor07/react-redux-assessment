@@ -3,7 +3,7 @@ import {
     requestFilteredCalendar,
     createEvent,
     deleteEvent,
-    requestEventById,
+    // requestEventById,
     putEvent
 } from "../services/calendar";
 
@@ -54,8 +54,8 @@ const initialState = {
     createEventFailure: false,
     deleteEventFailure: false,
     deleteEventPending: false,
-    getEventByIdPending: false,
-    getEventByIdFailure: false,
+    // getEventByIdPending: false,
+    // getEventByIdFailure: false,
     putEventPending: false,
     putEventFailed: false
 }
@@ -108,26 +108,26 @@ export default function reducer(state = initialState, action) {
                 postFilteredEventsFailure: true,
             }
 
-        case GET_EVENT_BY_ID_REQUEST:
-            return {
-                ...state,
-                getEventByIdPending: true
-            }
-
-        case GET_EVENT_BY_ID_SUCCESS:
-            return {
-                ...state,
-                getEventByIdPending: false,
-                getEventByIdFailure: false,
-                events: action.events
-            }
-
-        case GET_EVENT_BY_ID_FAILURE:
-            return {
-                ...state,
-                getEventByIdPending: false,
-                getEventByIdFailure: true,
-            }
+        // case GET_EVENT_BY_ID_REQUEST:
+        //     return {
+        //         ...state,
+        //         getEventByIdPending: true
+        //     }
+        //
+        // case GET_EVENT_BY_ID_SUCCESS:
+        //     return {
+        //         ...state,
+        //         getEventByIdPending: false,
+        //         getEventByIdFailure: false,
+        //         events: action.events
+        //     }
+        //
+        // case GET_EVENT_BY_ID_FAILURE:
+        //     return {
+        //         ...state,
+        //         getEventByIdPending: false,
+        //         getEventByIdFailure: true,
+        //     }
 
         case CREATE_EVENT_REQUEST:
             return {
@@ -197,15 +197,19 @@ export default function reducer(state = initialState, action) {
 //ACTION CREATORS
 //An action is a plain object that describes the intention to cause change with a type property.
 // It must have a type property which tells what type of action is being performed.
-//Action creators are the functions that encapsulate the process of creation of an action object.
+// Action creators are the functions that encapsulate the process of creation of an action object.
 // These functions simply return a plain Js object which is an action.
 // It promotes writing clean code and helps to achieve re-usability.
+// It also allows you to pass in parameters if you want to send data with the action
+
 
 export function getEventsRequest() {
     return {type: GET_EVENTS_REQUEST}
 }
 
 export function getEventsSuccess(events) {
+    console.log(events)
+    console.log('get events success')
     return {
         type: GET_EVENTS_SUCCESS,
         events: events
@@ -231,20 +235,20 @@ export function postFilteredEventsFailure() {
     return {type: POST_FILTERED_EVENTS_FAILURE}
 }
 
-export function getEventByIdRequest() {
-    return {type: GET_EVENT_BY_ID_REQUEST}
-}
-
-export function getEventByIdSuccess(events) {
-    return {
-        type: GET_EVENT_BY_ID_SUCCESS,
-        events: events
-    }
-}
-
-export function getEventByIdFailure() {
-    return {type: GET_EVENT_BY_ID_FAILURE}
-}
+// export function getEventByIdRequest() {
+//     return {type: GET_EVENT_BY_ID_REQUEST}
+// }
+//
+// // export function getEventByIdSuccess(events) {
+// //     return {
+// //         type: GET_EVENT_BY_ID_SUCCESS,
+// //         events: events
+// //     }
+// // }
+//
+// export function getEventByIdFailure() {
+//     return {type: GET_EVENT_BY_ID_FAILURE}
+// }
 
 function createEventRequest() {
     return {type: CREATE_EVENT_REQUEST}
@@ -298,8 +302,10 @@ function putEventFailure(){
 
 //dispatch allows you to dispatch an action to change a state in your application.
 export function initiateGetEvents() {
+    // Write a function that has `dispatch` and `getState` as arguments
     return function getEvents(dispatch, getState) {
         dispatch(getEventsRequest())
+        // Make an async HTTP request
         requestCalendar(getState().user.token).then(response => {
             if (!response.ok) {
                 dispatch(getEventsFailure())
@@ -310,7 +316,7 @@ export function initiateGetEvents() {
                     dispatch(getEventsFailure())
                     return
                 }
-
+                // Dispatch an action with the event list we received from async call
                 dispatch(getEventsSuccess(json.event_list))
             }, () => dispatch(getEventsFailure()))
         }, () => dispatch(getEventsFailure()))
@@ -319,9 +325,6 @@ export function initiateGetEvents() {
 
 export function initiatePostEventsInWindow(window) {
     return function postEventsInWindow(dispatch, getState) {
-        console.log(` initiate post events window date: ${window.window_start}, ${window.window_end}`)
-        // const stringWindow = JSON.stringify(window)
-        // console.log(stringWindow)
         dispatch(postFilteredEventsRequest())
         requestFilteredCalendar(getState().user.token, window).then(response => {
             if (!response.ok) {
@@ -342,28 +345,28 @@ export function initiatePostEventsInWindow(window) {
     }
 }
 
-export function initiateGetEventById(event) {
-    return function eventByIdDispatcher(dispatch, getState) {
-        dispatch(getEventByIdRequest())
-        requestEventById(getState().user.token, event).then(response => {
-            if (!response.ok) {
-                dispatch(getEventByIdFailure())
-                return
-            }
-
-            response.json().then(json => {
-                if (!json.event_list) {
-                    console.log(`no event details found`)
-                    dispatch(getEventByIdFailure())
-                    return
-                }
-
-                dispatch(getEventByIdSuccess(json.event_list[0]))
-                // dispatch(initiateGetEvents())
-            }, () => dispatch(getEventByIdFailure()))
-        }, () => dispatch(getEventByIdFailure()))
-    }
-}
+// export function initiateGetEventById(event) {
+//     return function eventByIdDispatcher(dispatch, getState) {
+//         dispatch(getEventByIdRequest())
+//         requestEventById(getState().user.token, event).then(response => {
+//             if (!response.ok) {
+//                 dispatch(getEventByIdFailure())
+//                 return
+//             }
+//
+//             response.json().then(json => {
+//                 if (!json.event_list) {
+//                     console.log(`no event details found`)
+//                     dispatch(getEventByIdFailure())
+//                     return
+//                 }
+//
+//                 dispatch(getEventByIdSuccess(json.event_list[0]))
+//                 // dispatch(initiateGetEvents())
+//             }, () => dispatch(getEventByIdFailure()))
+//         }, () => dispatch(getEventByIdFailure()))
+//     }
+// }
 
 export function initiateCreateEvent(event) {
     return function createEventDispatcher(dispatch, getState) {

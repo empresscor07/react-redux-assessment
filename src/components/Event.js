@@ -3,7 +3,7 @@ import {useState, useEffect} from "react";
 import EditEvent from "./EditEvent";
 
 export default function Event({event, handleDeleteEvent, deleteEventPending, handlePostEvent, handlePutEvent}) {
-    console.log(event)
+    // console.log(event)
     const [deletePending, setDeletePending] = useState(false)
     const [showDetails, setShowDetails] = useState(false);
     const [show, setShow] = useState(false);

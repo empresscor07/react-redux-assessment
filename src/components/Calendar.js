@@ -5,6 +5,7 @@ import NewEvent from "./NewEvent";
 import FilterEvents from "./FilterEvents"
 import LoadingEvent from "./LoadingEvent";
 import InviteByEvent from "./InviteByEvent";
+import Task from "./Task";
 
 function Calendar({
                     handleLogoutRequest,
@@ -28,7 +29,10 @@ function Calendar({
                     postInvitesPending,
                     postInvitesFailed,
                     inviteResponses,
-                    handlePutEvent
+                    handlePutEvent,
+                    tasks,
+                    getTasksPending,
+                    getTasksFailed
 
 }) {
     const [show, setShow] = useState(false);
@@ -146,11 +150,33 @@ function Calendar({
                         <h2>Loading...</h2>
                 }
             </Row>
-            <Row>
-                This is where Reminders will display
+            <Row className='mt-3'>
+                <Col><h1>Tasks:</h1></Col>
+                <Col xs='auto'><Button onClick={handleShow}>New</Button></Col>
+                <Col xs='auto'>
+                    {
+                        showFilteredEventsReset ?
+                            <Button variant='outline-success' onClick={resetEvents}>Reset</Button> :
+                            <Button variant='success' onClick={handleFilterShow}>Filter</Button>
+                    }
+                </Col>
+                {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
             </Row>
             <Row>
-                This is where Tasks will display
+                {
+                    tasks && !getTasksPending ?
+                        tasks.map((task, idx) => <Task
+                            key={idx}
+                            task={task}
+                            // handlePostInvite={handlePostInvite}
+                            // handleDeleteEvent={handleDeleteEvent}
+                            // deleteEventPending={deleteEventPending}
+                        />) :
+                        <h2>Loading...</h2>
+                }
+            </Row>
+            <Row>
+                This is where Reminders will display
             </Row>
 
             <ToastContainer className="p-3" position='bottom-end'>

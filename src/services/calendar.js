@@ -49,16 +49,16 @@ export function deleteEvent(token, event) {
     })
 }
 
-export function requestEventById(token, event) {
-    // console.log('Running request event by id');
-    return fetch(base_url + 'calendar/events/' + event.id, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        },
-    })
-}
+// export function requestEventById(token, event) {
+//     // console.log('Running request event by id');
+//     return fetch(base_url + 'calendar/events/' + event.id, {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': 'Bearer ' + token
+//         },
+//     })
+// }
 
 //the event will already be changed locally and sent in the body to have values read on back end
 export function putEvent(token, event) {
