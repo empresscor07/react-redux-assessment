@@ -8,6 +8,7 @@ import InviteByEvent from "./InviteByEvent";
 import Task from "./Task";
 import NewTask from "./NewTask";
 import FilterTasks from "./FilterTasks"
+import FilterInvites from "./FilterInvites"
 
 function Calendar({
                     handleLogoutRequest,
@@ -40,18 +41,24 @@ function Calendar({
                     deleteTaskPending,
                     deleteTaskFailed,
                     handleFilterTasks,
-                    handleResetTasks
+                    handleResetTasks,
+                    handleFilterInvites,
+                    handleResetInvites
 
 }) {
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [showTaskFilter, setShowTaskFilter] = useState(false);
+    const [showInviteFilter, setShowInviteFilter] =useState(false);
+    const [showReminderFilter, setShowReminderFilter] = useState(false);
     const [showNewTask, setShowNewTask] = useState(false);
     const [showError, setShowError] = useState(getEventsFailure);
     const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
     //handles switching text on filter buttons
     const [showFilteredEventsReset, setShowFilteredEventsReset] = useState(false);
     const [showFilteredTasksReset, setShowFilteredTasksReset] = useState(false);
+    const [showFilteredInvitesReset, setShowFilteredInvitesReset] =useState(false);
+    const [showFilteredRemindersReset, setShowFilteredRemindersReset] = useState(false);
     const [showGetInvitesError, setShowGetInvitesError] = useState(getInvitesFailed);
     const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
     const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
@@ -61,7 +68,8 @@ function Calendar({
     const handleShowNewTask = () => setShowNewTask(true);
     const handleFilterClose = () => setShowFilter(false);
     const handleFilterTaskClose = () => setShowTaskFilter(false);
-    console.log()
+    const handleFilterInviteClose = () => setShowInviteFilter(false);
+    const handleFilterReminderClose = () => setShowReminderFilter(false);
 
     const handleFilterShow = async () => {
         await setShowFilter(true)
@@ -83,6 +91,26 @@ function Calendar({
     function handleShowTaskFilterButton() {
         setShowFilteredTasksReset(false)
     }
+    const handleFilterInviteShow = async () => {
+        await setShowInviteFilter(true)
+        await handleShowInviteResetButton()
+    }
+    function handleShowInviteResetButton() {
+        setShowFilteredInvitesReset(true)
+    }
+    function handleShowInviteFilterButton() {
+        setShowFilteredInvitesReset(false)
+    }
+    const handleFilterReminderShow = async () => {
+        await setShowReminderFilter(true)
+        await handleShowReminderResetButton()
+    }
+    function handleShowReminderResetButton() {
+        setShowFilteredRemindersReset(true)
+    }
+    function handleShowReminderFilterButton() {
+        setShowFilteredRemindersReset(false)
+    }
     const resetEvents = async () => {
         await handleResetEvents()
         await handleShowFilterButton()
@@ -92,6 +120,18 @@ function Calendar({
         await handleResetTasks()
         console.log('Resetting Tasks')
         await handleShowTaskFilterButton()
+    }
+
+    const resetInvites = async () => {
+        await handleResetInvites()
+        console.log('Resetting Invites')
+        await handleShowInviteFilterButton()
+    }
+
+    const resetReminders = async () => {
+        // await handleResetReminders()
+        console.log('Resetting Reminders')
+        await handleShowReminderFilterButton()
     }
 
     function handleTest() {
@@ -158,10 +198,16 @@ function Calendar({
                 }
             </Row>
             {/*<NewInviteResponse show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>*/}
-            {/*<FilterEvents showFilter={showFilter} handleFilterClose={handleFilterClose} handleFilterEvents={handleFilterEvents}/>*/}
+            <FilterInvites showInviteFilter={showInviteFilter} handleFilterInviteClose={handleFilterInviteClose} handleFilterInvites={handleFilterInvites}/>
             <Row className='mt-3'>
                 <Col><h1>Invites:</h1></Col>
-                {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
+                <Col xs='auto'>
+                    {
+                        showFilteredInvitesReset ?
+                            <Button variant='outline-success' onClick={resetInvites}>Reset</Button> :
+                            <Button variant='success' onClick={handleFilterInviteShow}>Filter</Button>
+                    }
+                </Col>
                 <Col xs='auto'><Button variant='warning' onClick={handleTest}>Test</Button></Col>
             </Row>
             <Row>

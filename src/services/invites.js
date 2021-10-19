@@ -14,6 +14,7 @@ export function requestInvites(token) {
 
 //initially lets user select if attending and creates invite table entry with response
 export function postInvite(token, invite, accepted) {
+    console.log('Now running post invite')
     const acceptedObject = {accepted:accepted}
     console.log(acceptedObject)
     console.log('postInvite function connecting to database')
@@ -28,9 +29,23 @@ export function postInvite(token, invite, accepted) {
     })
 }
 
+export function requestFilteredInvites(token, window) {
+    console.log('running request filtered invites')
+    console.log(window.window_start, window.window_end)
+    console.log(base_url + 'calendar/invite/window')
+    return fetch(base_url + 'calendar/invite/window', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(window)
+    })
+}
+
 // //inviteRSVP is the current invites table row we want to update
 // export function putInvite(token, inviteRSVP, accepted) {
-//     return fetch(base_url + 'calendar/invite/' + inviteRSVP.id, {
+//     return fetch(base_url + 'calendar/invite/update/' + inviteRSVP.id, {
 //         method: 'PUT',
 //         headers: {
 //             'Content-Type': 'application/json',

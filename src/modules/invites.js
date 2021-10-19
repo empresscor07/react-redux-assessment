@@ -1,10 +1,10 @@
 import {
     requestInvites,
     postInvite,
+    requestFilteredInvites
     // putInvite
 } from "../services/invites";
-import {requestFilteredCalendar} from "../services/calendar";
-import {postFilteredEventsFailure, postFilteredEventsRequest, postFilteredEventsSuccess} from "./calendar";
+
 
 //ACTIONS
 // plain JavaScript object that must have a type attribute to indicate
@@ -19,9 +19,14 @@ const POST_INVITE_REQUEST = 'calendar/invite/POST_INVITE_REQUEST'
 const POST_INVITE_SUCCESS = 'calendar/invite/POST_INVITE_SUCCESS'
 const POST_INVITE_FAILURE = 'calendar/invite/POST_INVITE_FAILURE'
 
+const POST_FILTERED_INVITES_REQUEST = 'calendar/invite/POST_FILTERED_INVITES_REQUEST'
+const POST_FILTERED_INVITES_SUCCESS = 'calendar/invite/POST_FILTERED_INVITES_SUCCESS'
+const POST_FILTERED_INVITES_FAILURE = 'calendar/invite/POST_FILTERED_INVITES_FAILURE'
+
 const PUT_INVITE_REQUEST = 'calendar/invite/PUT_INVITE_REQUEST'
 const PUT_INVITE_SUCCESS = 'calendar/invite/PUT_INVITE_SUCCESS'
 const PUT_INVITE_FAILURE = 'calendar/invite/PUT_INVITE_FAILURE'
+
 //REDUCERS
 const initialState = {
     getInvitesPending: false,
@@ -29,6 +34,8 @@ const initialState = {
     postInvitePending: false,
     postInviteFailed: false,
     invitesByEvent: [],
+    postFilteredInvitesPending: false,
+    postFilteredInvitesFailed: false,
     inviteResponses: [],
     putInvitePending: false,
     putInviteFailed: false
@@ -78,6 +85,27 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 postInvitePending: false,
                 postInviteFailed: true
+            }
+
+        case POST_FILTERED_INVITES_REQUEST:
+            return {
+                ...state,
+                postFilteredInvitesPending: true
+            }
+
+        case POST_FILTERED_INVITES_SUCCESS:
+            return {
+                ...state,
+                postFilteredInvitesPending: false,
+                postFilteredInvitesFailure: false,
+                invitesByEvent: action.invitesByEvent
+            }
+
+        case POST_FILTERED_INVITES_FAILURE:
+            return {
+                ...state,
+                postFilteredInvitesPending: false,
+                postFilteredInvitesFailure: true,
             }
 
         case PUT_INVITE_REQUEST:
@@ -134,6 +162,21 @@ export function postInviteSuccess() {
 
 export function postInviteFailure() {
     return {type: GET_INVITES_FAILURE}
+}
+
+export function postFilteredInvitesRequest() {
+    return {type: POST_FILTERED_INVITES_REQUEST}
+}
+
+export function postFilteredInvitesSuccess(invitesByEvent) {
+    return {
+        type: POST_FILTERED_INVITES_SUCCESS,
+        invitesByEvent: invitesByEvent
+    }
+}
+
+export function postFilteredInvitesFailure() {
+    return {type: POST_FILTERED_INVITES_FAILURE}
 }
 
 export function putInviteRequest() {
@@ -197,6 +240,30 @@ export function initiatePostInvite(invite, accepted) {
                 dispatch(postInviteSuccess())
             }, () => dispatch(postInviteFailure()))
         }, () => dispatch(postInviteFailure()))
+    }
+}
+
+export function initiatePostInvitesInWindow(window) {
+    return function postInvitesInWindow(dispatch, getState) {
+        dispatch(postFilteredInvitesRequest())
+        console.log('initiate post filtered invites running')
+        console.log(window)
+        requestFilteredInvites(getState().user.token, window).then(response => {
+            if (!response.ok) {
+                console.log('response not ok')
+                dispatch(postFilteredInvitesFailure())
+                return
+            }
+            response.json().then(json => {
+                if (!json.invite_list) {
+                    console.log(`no invite list ${response.json()}`)
+                    dispatch(postFilteredInvitesFailure())
+                    return
+                }
+
+                dispatch(postFilteredInvitesSuccess(json.invite_list))
+            }, () => dispatch(postFilteredInvitesFailure()))
+        }, () => dispatch(postFilteredInvitesFailure()))
     }
 }
 

@@ -10,11 +10,12 @@ import {
     initiateGetEvents,
     initiatePutEvent
 } from "./modules/calendar";
-import {initiatePostInvite} from "./modules/invites";
+import {initiateGetInvites, initiatePostInvite, initiatePostInvitesInWindow} from "./modules/invites";
 import {initiateDeleteTask, initiatePostTask, initiateGetTasks, initiatePostTasksInWindow} from "./modules/tasks";
 // I think we need to list the parts of each state that we will be using here as params,
 // otherwise would need to put in params as a whole and
-// then use notation params.events, params.createEventPending
+// then use notation params.events, params.createEventPending - note these params are not functions - import functions above
+//these params are only state variables that we connected to at the bottom of the page
 function App({
                  dispatch,
                  loginPending,
@@ -118,6 +119,17 @@ function handlePostTask(task) {
         dispatch(initiateGetTasks())
     }
 
+    function handleFilterInvites(window) {
+        console.log('Filtering Invites using window below:')
+        console.log(window)
+        dispatch(initiatePostInvitesInWindow(window))
+    }
+
+    function handleResetInvites() {
+      console.log('reset invites running')
+        dispatch(initiateGetInvites())
+    }
+
   return (
       <Container>
         {
@@ -157,6 +169,8 @@ function handlePostTask(task) {
                   getInvitesPending={getInvitesPending}
                   handleFilterTasks={handleFilterTasks}
                   handleResetTasks={handleResetTasks}
+                  handleFilterInvites={handleFilterInvites}
+                  handleResetInvites={handleResetInvites}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}
