@@ -1,4 +1,4 @@
-import {Card, CloseButton, Col, Offcanvas, Row, Spinner, Badge, Button} from "react-bootstrap";
+import {Card, CloseButton, Col, Row, Spinner, Badge, Button} from "react-bootstrap";
 import {useState, useEffect} from "react";
 // import EditEvent from "./EditEvent";
 //more possible parameters: handleDeleteTask, deleteTaskPending, handlePutTask

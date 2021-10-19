@@ -1,8 +1,10 @@
 import {
     requestTasks,
     postTask,
-    deleteTask
+    deleteTask,
+    requestFilteredTasks
 } from "../services/tasks";
+
 
 //ACTIONS
 // plain JavaScript object that must have a type attribute to indicate
@@ -21,6 +23,10 @@ const DELETE_TASK_REQUEST = 'calendar/task/DELETE_TASK_REQUEST'
 const DELETE_TASK_SUCCESS = 'calendar/task/DELETE_TASK_SUCCESS'
 const DELETE_TASK_FAILURE = 'calendar/task/DELETE_TASK_FAILURE'
 
+const POST_FILTERED_TASKS_REQUEST = 'calendar/task/POST_FILTERED_TASKS_REQUEST'
+const POST_FILTERED_TASKS_SUCCESS = 'calendar/task/POST_FILTERED_TASKS_SUCCESS'
+const POST_FILTERED_TASKS_FAILURE = 'calendar/task/POST_FILTERED_TASKS_FAILURE'
+
 //REDUCERS
 const initialState = {
     getTasksPending: false,
@@ -29,7 +35,9 @@ const initialState = {
     postTaskPending: false,
     postTaskFailed: false,
     deleteTaskPending: false,
-    deleteTaskFailed: false
+    deleteTaskFailed: false,
+    postFilteredTasksPending: false,
+    postFilteredTasksFailed: false
 }
 
 //Switch case function to return state values based on the type of action executed
@@ -91,6 +99,27 @@ export default function reducer(state = initialState, action) {
                 deleteTaskFailed: true
             }
 
+        case POST_FILTERED_TASKS_REQUEST:
+            return {
+                ...state,
+                postFilteredTasksPending: true
+            }
+
+        case POST_FILTERED_TASKS_SUCCESS:
+            return {
+                ...state,
+                postFilteredTasksPending: false,
+                postFilteredTasksFailure: false,
+                tasks: action.tasks
+            }
+
+        case POST_FILTERED_TASKS_FAILURE:
+            return {
+                ...state,
+                postFilteredTasksPending: false,
+                postFilteredTasksFailure: true,
+            }
+
         default:
             return state
     }
@@ -134,6 +163,21 @@ export function deleteTaskSuccess() {
 
 export function deleteTaskFailure() {
     return {type: DELETE_TASK_FAILURE}
+}
+
+export function postFilteredTasksRequest() {
+    return {type: POST_FILTERED_TASKS_REQUEST}
+}
+
+export function postFilteredTasksSuccess(tasks) {
+    return {
+        type: POST_FILTERED_TASKS_SUCCESS,
+        tasks: tasks
+    }
+}
+
+export function postFilteredTasksFailure() {
+    return {type: POST_FILTERED_TASKS_FAILURE}
 }
 
 //SIDE EFFECTS
@@ -211,5 +255,27 @@ export function initiateDeleteTask(task) {
                 dispatch(initiateGetTasks())
             }, () => dispatch(deleteTaskFailure()))
         }, () => dispatch(deleteTaskFailure()))
+    }
+}
+
+export function initiatePostTasksInWindow(window) {
+    return function postTasksInWindow(dispatch, getState) {
+        dispatch(postFilteredTasksRequest())
+        requestFilteredTasks(getState().user.token, window).then(response => {
+            if (!response.ok) {
+                console.log('response not ok')
+                dispatch(postFilteredTasksFailure())
+                return
+            }
+            response.json().then(json => {
+                if (!json.task_list) {
+                    console.log(`no task list ${response.json()}`)
+                    dispatch(postFilteredTasksFailure())
+                    return
+                }
+
+                dispatch(postFilteredTasksSuccess(json.task_list))
+            }, () => dispatch(postFilteredTasksFailure()))
+        }, () => dispatch(postFilteredTasksFailure()))
     }
 }

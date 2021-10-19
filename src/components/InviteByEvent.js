@@ -1,5 +1,5 @@
-import {Card, CloseButton, Col, Offcanvas, Row, Spinner, Badge, Button} from "react-bootstrap";
-import {useState, useEffect} from "react";
+import {Card, Col, Offcanvas, Row, Badge, Button} from "react-bootstrap";
+import {useState} from "react";
 import NewRSVP from "./NewRSVP";
 //handleDeleteEvent, deleteEventPending put below as parameter
 export default function InviteByEvent({invite, handlePostInvite}) {
@@ -29,11 +29,11 @@ export default function InviteByEvent({invite, handlePostInvite}) {
         return (date.getMonth()+1) + '/' + date.getDate() + '/' + date.getFullYear()
     }
 
-    function handleSeeRSVPResponse() {
-        console.log('See RSVP response click')
-        //will call the get invite by id here
-        //place where we will display if user is going or not only visible once invite row created
-    }
+    // function handleSeeRSVPResponse() {
+    //     console.log('See RSVP response click')
+    //     //will call the get invite by id here
+    //     //place where we will display if user is going or not only visible once invite row created
+    // }
 
     const startDate = new Date(invite.start_timestamp)
     const startTime = startDate.getTime()

@@ -1,4 +1,4 @@
-import {Button, Row, Col, Toast, ToastContainer, Offcanvas} from 'react-bootstrap'
+import {Button, Row, Col, Toast, ToastContainer} from 'react-bootstrap'
 import {useEffect, useState} from "react";
 import Event from './Event.js';
 import NewEvent from "./NewEvent";
@@ -7,6 +7,7 @@ import LoadingEvent from "./LoadingEvent";
 import InviteByEvent from "./InviteByEvent";
 import Task from "./Task";
 import NewTask from "./NewTask";
+import FilterTasks from "./FilterTasks"
 
 function Calendar({
                     handleLogoutRequest,
@@ -37,16 +38,20 @@ function Calendar({
                     handlePostTask,
                     handleDeleteTask,
                     deleteTaskPending,
-                    deleteTaskFailed
+                    deleteTaskFailed,
+                    handleFilterTasks,
+                    handleResetTasks
 
 }) {
     const [show, setShow] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+    const [showTaskFilter, setShowTaskFilter] = useState(false);
     const [showNewTask, setShowNewTask] = useState(false);
     const [showError, setShowError] = useState(getEventsFailure);
     const [postFilterError, setPostFilterError] = useState(postFilteredEventsFailure);
-    //handles switching text on filter button
+    //handles switching text on filter buttons
     const [showFilteredEventsReset, setShowFilteredEventsReset] = useState(false);
+    const [showFilteredTasksReset, setShowFilteredTasksReset] = useState(false);
     const [showGetInvitesError, setShowGetInvitesError] = useState(getInvitesFailed);
     const [showCreateEventError, setCreateEventError] = useState(createEventFailure);
     const [showDeleteEventError, setDeleteEventError] = useState(deleteEventFailure);
@@ -55,6 +60,9 @@ function Calendar({
     const handleCloseNewTask = () => setShowNewTask(false);
     const handleShowNewTask = () => setShowNewTask(true);
     const handleFilterClose = () => setShowFilter(false);
+    const handleFilterTaskClose = () => setShowTaskFilter(false);
+    console.log()
+
     const handleFilterShow = async () => {
         await setShowFilter(true)
         await handleShowResetButton()
@@ -65,12 +73,31 @@ function Calendar({
     function handleShowFilterButton() {
         setShowFilteredEventsReset(false)
     }
+    const handleFilterTaskShow = async () => {
+        await setShowTaskFilter(true)
+        await handleShowTaskResetButton()
+    }
+    function handleShowTaskResetButton() {
+        setShowFilteredTasksReset(true)
+    }
+    function handleShowTaskFilterButton() {
+        setShowFilteredTasksReset(false)
+    }
     const resetEvents = async () => {
         await handleResetEvents()
         await handleShowFilterButton()
     }
 
-    //TODO these don't show up at the right time yet
+    const resetTasks = async () => {
+        await handleResetTasks()
+        console.log('Resetting Tasks')
+        await handleShowTaskFilterButton()
+    }
+
+    function handleTest() {
+        console.log(showGetInvitesError)
+    }
+
     useEffect(() => {
         if (getEventsFailure) {
             setShowError(true)
@@ -101,15 +128,6 @@ function Calendar({
         }
     }, [getInvitesFailed])
 
-    // handles switching text on filter button
-    // useEffect(() => {
-    //     if (postFilteredEventsSuccess) {
-    //         setShowFilteredEventsReset(true)
-    //     }
-    // }, [postFilteredEventsSuccess])
-    // console.log(showFilteredEventsReset);
-    // console.log('This is the calendar page')
-    // console.log(invitesByEvent)
     return (
         <>
             <NewEvent show={show} handleClose={handleClose} handleCreateEvent={handleCreateEvent}/>
@@ -144,6 +162,7 @@ function Calendar({
             <Row className='mt-3'>
                 <Col><h1>Invites:</h1></Col>
                 {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
+                <Col xs='auto'><Button variant='warning' onClick={handleTest}>Test</Button></Col>
             </Row>
             <Row>
                 {
@@ -152,21 +171,20 @@ function Calendar({
                             key={idx}
                             invite={invite}
                             handlePostInvite={handlePostInvite}
-                            // handleDeleteEvent={handleDeleteEvent}
-                            // deleteEventPending={deleteEventPending}
                         />) :
                         <h2>Loading...</h2>
                 }
             </Row>
             <NewTask showNewTask={showNewTask} handleCloseNewTask={handleCloseNewTask} handlePostTask={handlePostTask}/>
+            <FilterTasks showTaskFilter={showTaskFilter} handleFilterTaskClose={handleFilterTaskClose} handleFilterTasks={handleFilterTasks}/>
             <Row className='mt-3'>
                 <Col><h1>Tasks:</h1></Col>
                 <Col xs='auto'><Button onClick={handleShowNewTask}>New Task</Button></Col>
                 <Col xs='auto'>
                     {
-                        showFilteredEventsReset ?
-                            <Button variant='outline-success' onClick={resetEvents}>Reset</Button> :
-                            <Button variant='success' onClick={handleFilterShow}>Filter</Button>
+                        showFilteredTasksReset ?
+                            <Button variant='outline-success' onClick={resetTasks}>Reset</Button> :
+                            <Button variant='success' onClick={handleFilterTaskShow}>Filter</Button>
                     }
                 </Col>
                 {/*<Col xs='auto'><Button variant='success' onClick={handleFilterShow}>Filter</Button></Col>*/}
@@ -204,7 +222,7 @@ function Calendar({
                 <Toast bg='danger' onClose={() => setShowGetInvitesError(false)} show={showGetInvitesError} delay={3000} autohide>
                     <Toast.Body className={'text-white'}>Error retrieving Invites</Toast.Body>
                 </Toast>
-                {/*// todo add errors for get invites, update event, edit invite, create reminder, show reminders by date range,*/}
+                {/*// todo add errors for, update event, edit invite, create reminder, show reminders by date range,*/}
                 {/*// todo edit reminder, delete reminder, create task, show tasks by date range, edit task, delete a task*/}
             </ToastContainer>
             {createEventPending && <LoadingEvent/>}

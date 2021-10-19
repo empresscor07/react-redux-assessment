@@ -11,7 +11,7 @@ import {
     initiatePutEvent
 } from "./modules/calendar";
 import {initiatePostInvite} from "./modules/invites";
-import {initiateDeleteTask, initiatePostTask} from "./modules/tasks";
+import {initiateDeleteTask, initiatePostTask, initiateGetTasks, initiatePostTasksInWindow} from "./modules/tasks";
 // I think we need to list the parts of each state that we will be using here as params,
 // otherwise would need to put in params as a whole and
 // then use notation params.events, params.createEventPending
@@ -97,16 +97,26 @@ function handlePutEvent(event) {
 }
 
 function handlePostTask(task) {
-      console.log('I will be posting a task here!!!')
-      console.log(task)
+      // console.log('I will be posting a task here!!!')
+      // console.log(task)
       dispatch(initiatePostTask(task))
   }
 
   function handleDeleteTask(task) {
-      console.log("I will be deleting an event here!")
-      console.log(task)
+      // console.log("I will be deleting an event here!")
+      // console.log(task)
       dispatch(initiateDeleteTask(task))
   }
+
+    function handleFilterTasks(window) {
+        console.log('Filtering Tasks using window below:')
+        console.log(window)
+        dispatch(initiatePostTasksInWindow(window))
+    }
+
+    function handleResetTasks() {
+        dispatch(initiateGetTasks())
+    }
 
   return (
       <Container>
@@ -143,6 +153,10 @@ function handlePostTask(task) {
                   handleDeleteTask={handleDeleteTask}
                   deleteTaskPending={deleteTaskPending}
                   deleteTaskFailed={deleteTaskFailed}
+                  getInvitesFailed={getInvitesFailed}
+                  getInvitesPending={getInvitesPending}
+                  handleFilterTasks={handleFilterTasks}
+                  handleResetTasks={handleResetTasks}
               /> :
               <Login
                   handleLoginRequest={handleLoginRequest}

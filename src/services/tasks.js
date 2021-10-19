@@ -35,3 +35,15 @@ export function deleteTask(token, task) {
         //don't need body here because already getting the host_id through the token and the task id through URL
     })
 }
+
+export function requestFilteredTasks(token, window) {
+    console.log(window.window_start, window.window_end)
+    return fetch(base_url + 'calendar/task/window', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(window)
+    })
+}

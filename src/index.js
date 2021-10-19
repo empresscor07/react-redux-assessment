@@ -52,7 +52,7 @@ const asyncMiddleware = storeAPI => next => action => {
 
 
 //The syntax of using applyMiddleware API is −
-const middlewareEnhancer = applyMiddleware(asyncMiddleware, logger) //logger passed here if needed
+const middlewareEnhancer = applyMiddleware(asyncMiddleware) //logger passed here if needed
 
 
 
